@@ -16,7 +16,9 @@
     ],
     "require": {
         "php": "^8.0",
+        "ext-bcmath": "*",
         "ext-json": "*",
+        "doctrine/dbal": "^3.0",
         "monolog/monolog": "^2.2",
         "php-di/php-di": "^6.3",
         "slim/psr7": "^1.3",

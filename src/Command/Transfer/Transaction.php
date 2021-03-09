@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command\Transaction;
+namespace App\Command\Transfer;
 
 class Transaction
 {
