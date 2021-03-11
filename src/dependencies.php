@@ -1,13 +1,24 @@
 <?php
 
 use DI\ContainerBuilder;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
-        LoggerInterface::class => function (ContainerInterface $c) {
+        Connection::class => function (ContainerInterface $c) {
+            $settings = [
+                'host'          => $c->get('settings')['mysql']['host'],
+                'dbname'        => $c->get('settings')['mysql']['database'],
+                'user'          => $c->get('settings')['mysql']['user'],
+                'password'      => $c->get('settings')['mysql']['pass'],
+                'port'          => 3306,
+                'driver'        => 'pdo_mysql',
+                'charset'       => 'utf8'
+            ];
 
+            return DriverManager::getConnection($settings);
         },
     ]);
 };

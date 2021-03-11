@@ -23,7 +23,13 @@ final class Wallet
     private Money $balance;
     
     private Person $owner;
-    
+
+    /**
+     * Wallet constructor.
+     * @param PositiveInt $id
+     * @param Money $balance
+     * @param Person $owner
+     */
     public function __construct(PositiveInt $id, Money $balance, Person $owner)
     {
         $this->balance = $balance;
@@ -46,7 +52,11 @@ final class Wallet
     {
         return $this->balance->getAmount();
     }
-    
+
+    /**
+     * @param Transaction $transaction
+     * @throws InsufficientFundsException
+     */
     public function updateBalance(Transaction $transaction): void 
     {
         $transactionType = $transaction->getType()->getValue();
@@ -59,7 +69,11 @@ final class Wallet
             $this->creditAmount($transaction->getAmount());
         }
     }
-    
+
+    /**
+     * @param Money $amount
+     * @throws InsufficientFundsException
+     */
     private function debitAmount(Money $amount): void
     {
         if (!$this->hasSufficientBalanceToTransfer($amount)) {
@@ -68,7 +82,10 @@ final class Wallet
         
         $this->balance = $this->balance->sub($amount);
     }
-    
+
+    /**
+     * @param Money $amount
+     */
     private function creditAmount(Money $amount): void
     {
         $this->balance = $this->balance->add($amount);
@@ -100,7 +117,10 @@ final class Wallet
         
         return new static($id, $balance, $owner);
     }
-    
+
+    /**
+     * @return array
+     */
     public function toArray(): array
     {
         return [

@@ -2,7 +2,7 @@
 
 namespace App\Model\Person;
 
-interface PersonQuery
+interface DataObjectAccess
 {
     /**
      * @return Person

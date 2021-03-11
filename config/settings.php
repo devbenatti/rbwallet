@@ -8,10 +8,6 @@ return function (ContainerBuilder $containerBuilder) {
         'settings' => [
             'component' => '',
             'localEnvironment' => getenv('DOCKER_CONTAINER') === '1',
-            'logger' => [
-                'colorized'     => (bool)getenv('DOCKER_CONTAINER'),
-                'customLogPath' => '/tmp/logfile'
-            ],
             'mysql' => [
                 'host'      => getenv('DATABASE_HOST'),
                 'user'      => getenv('DATABASE_USER'),

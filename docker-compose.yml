@@ -3,11 +3,14 @@ version: '3.7'
 volumes:
   logs:
     driver: local
+  db:
 
 services:
-  slim:
+  web:
     build: .
     working_dir: /var/www
+    env_file:
+      - .env
     command: php -S 0.0.0.0:8080 -t public
     environment:
       docker: "true"
@@ -15,3 +18,20 @@ services:
       - 8080:8080
     volumes:
       - .:/var/www
+    depends_on:
+      - db
+    links:
+      - db
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: onepuchman
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_HOST: db
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - ./db:/var/lib/mysql
