@@ -1,8 +1,9 @@
 <?php
 
-namespace Tests\Model;
+namespace Tests\Model\ValueObjects;
 
-use App\Model\Email;
+
+use App\Model\ValueObjects\Email;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

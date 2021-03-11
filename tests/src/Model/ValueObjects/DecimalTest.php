@@ -1,8 +1,9 @@
 <?php
 
-namespace Tests\Model;
+namespace Tests\Model\ValueObjects;
 
-use App\Model\Decimal;
+
+use App\Model\ValueObjects\Decimal;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

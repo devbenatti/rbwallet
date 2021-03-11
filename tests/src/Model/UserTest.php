@@ -2,8 +2,8 @@
 
 namespace Tests\Model;
 
-use App\Model\DocumentType;
-use App\Model\User;
+use App\Model\Person\User;
+use App\Model\ValueObjects\DocumentType;
 use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
@@ -17,21 +17,6 @@ class UserTest extends TestCase
         static::assertEquals($userData, $user->toArray());
     }
     
-    public function testIsMerchantShouldBeTrue()
-    {
-        $userData = $this->getUserData([
-            'document' => [
-                'type' => DocumentType::CNPJ,
-                'identification' => '99464576000177'
-            ]
-        ]);
-
-        $user = User::build($userData);
-
-        static::assertEquals($userData, $user->toArray());
-        static::assertTrue($user->isMerchant());
-    }
-
     /**
      * @param array $data
      * @return array
@@ -43,12 +28,11 @@ class UserTest extends TestCase
                 'name' => 'Renato Benatti',
                 'document' => [
                     'type' => DocumentType::CPF,
-                    'identification' => '02349057640'
+                    'identifier' => '02349057640'
                 ],
                 'email' => 'test@gmail.com',
                 'password' => 'semsenha'
             ], $data)
         );
     }
-
 }

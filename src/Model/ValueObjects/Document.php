@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Model;
+namespace App\Model\ValueObjects;
 
+use App\Model\Immutability;
 use ReflectionException;
 
 final class Document
@@ -10,12 +11,12 @@ final class Document
     
     private DocumentType $type;
     
-    private StrValue $identification;
+    private StrValue $identifier;
     
-    public function __construct(DocumentType $type, StrValue $identification)
+    public function __construct(DocumentType $type, StrValue $identifier)
     {
         $this->type = $type;
-        $this->identification = $identification;
+        $this->identifier = $identifier;
     }
     
     /**
@@ -29,21 +30,21 @@ final class Document
     /**
      * @return StrValue
      */
-    public function getIdentification(): StrValue
+    public function getIdentifier(): StrValue
     {
-        return $this->identification;
+        return $this->identifier;
     }
 
     /**
      * @param $type
-     * @param $identification
+     * @param $identifier
      * @return Document
      * @throws ReflectionException
      */
-    public static function build($type, $identification): Document
+    public static function build($type, $identifier): Document
     {
         $documentType = new DocumentType($type);
-        $documentIdentification = new StrValue($identification);
+        $documentIdentification = new StrValue($identifier);
         
         return new static($documentType, $documentIdentification);
     }
@@ -62,8 +63,8 @@ final class Document
     public function toArray(): array
     {
         return [
-          'type' => $this->type,
-          'identification' => $this->identification  
+          'type' => $this->type->getValue(),
+          'identifier' => $this->identifier->getValue()  
         ];
     }
     

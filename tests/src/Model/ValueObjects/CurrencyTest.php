@@ -1,9 +1,10 @@
 <?php
 
-namespace Tests\Model;
+namespace Tests\Model\ValueObjects;
 
-use App\Model\Currency;
+
 use App\Model\Exception\InvalidEnum;
+use App\Model\ValueObjects\Currency;
 use PHPUnit\Framework\TestCase;
 
 class CurrencyTest extends TestCase

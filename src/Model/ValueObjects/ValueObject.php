@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Model;
+namespace App\Model\ValueObjects;
+
+use App\Model\Immutability;
 
 trait ValueObject
 {
@@ -9,7 +11,7 @@ trait ValueObject
     /**
      * @var mixed type
      */
-    protected $value;
+    private $value;
 
     /**
      * @return string

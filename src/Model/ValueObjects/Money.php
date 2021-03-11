@@ -1,6 +1,9 @@
 <?php
 
-namespace App\Model;
+namespace App\Model\ValueObjects;
+
+use App\Model\Immutability;
+use ReflectionException;
 
 final class Money
 {
@@ -31,9 +34,7 @@ final class Money
             return $this;
         }
         
-        $sum = $this->amount->add($toAdd->getAmount());
-        
-        return new static($sum, $this->currency);
+        return new static($this->amount->add($toAdd->getAmount()), $this->currency);
     }
 
     /**
@@ -45,15 +46,14 @@ final class Money
         if ($toSub->amount === 0) {
             return $this;
         }
-
-        $sum = $this->amount->sub($toSub->getAmount());
         
-        return new static($sum, $this->currency);
+        return new static($this->amount->sub($toSub->getAmount()), $this->currency);
     }
 
     /**
      * @param array $data
      * @return Money
+     * @throws ReflectionException
      */
     public static function build(array $data): Money
     {

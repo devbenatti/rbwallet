@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Model;
+namespace Tests\Model\ValueObjects;
 
-use App\Model\FullName;
+use App\Model\ValueObjects\FullName;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

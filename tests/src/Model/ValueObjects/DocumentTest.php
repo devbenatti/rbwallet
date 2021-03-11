@@ -1,8 +1,9 @@
 <?php
 
-namespace Tests\Model;
+namespace Tests\Model\ValueObjects;
 
-use App\Model\Document;
+
+use App\Model\ValueObjects\Document;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -13,7 +14,7 @@ class DocumentTest extends TestCase
     {
         $document = Document::build('CPF', '07749667910');
         
-        static::assertEquals('07749667910', $document->getIdentification()->getValue());
+        static::assertEquals('07749667910', $document->getIdentifier()->getValue());
         static::assertEquals('CPF', $document->getType()->getValue());
     }
     

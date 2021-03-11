@@ -13,14 +13,14 @@ $dependencies($containerBuilder);
 
 $container = $containerBuilder->build();
 
-AppFactory::setContainer($container);
-$app = AppFactory::create();
-$callableResolver = $app->getCallableResolver();
-
-$routes = require __DIR__ . '/../src/routes.php';
-$routes($app);
-
-// Add Routing Middleware
-$app->addRoutingMiddleware();
-
-$app->run();
+//AppFactory::setContainer($container);
+//$app = AppFactory::create();
+//$callableResolver = $app->getCallableResolver();
+//
+//$routes = require __DIR__ . '/../src/routes.php';
+//$routes($app);
+//
+//// Add Routing Middleware
+//$app->addRoutingMiddleware();
+//
+//$app->run();

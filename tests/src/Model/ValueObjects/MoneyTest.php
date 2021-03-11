@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Model;
+namespace Tests\Model\ValueObjects;
 
-use App\Model\Money;
+use App\Model\ValueObjects\Money;
 use PHPUnit\Framework\TestCase;
 
 class MoneyTest extends TestCase
