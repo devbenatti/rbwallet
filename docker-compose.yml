@@ -13,7 +13,10 @@ services:
       - .env
     command: php -S 0.0.0.0:8080 -t public
     environment:
-      docker: "true"
+      XDEBUG_CONFIG: remote_host=172.17.0.1
+      PHP_IDE_CONFIG: "serverName=xdebug-docker"
+    expose:
+      - 9000
     ports:
       - 8080:8080
     volumes:

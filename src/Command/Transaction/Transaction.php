@@ -2,17 +2,71 @@
 
 namespace App\Command\Transaction;
 
-final class Transaction
+use App\Command\Command;
+use App\Model\ImmutableCapabilities;
+
+final class Transaction implements Command
 {
-    public function __construct()
+    use ImmutableCapabilities;
+    
+    private float $amount;
+    
+    private int $payer;
+    
+    private int $payee;
+    
+    public function __construct(float $amount, int $payer, int $payee)
     {
-        $step1 = 'busca carteira do pagador';
-        $step2 = 'verifica se tem saldo';
-        $step3 = 'cria transação debito';
-        $step4 = 'consultar autorizador';
-        $step4 = 'debita valor da transação payer';
-        $step5 = 'credita o valor da transação para o payee';
-        $step6 = 'atualiza transação para completed';
-        $step7 = 'notifica o recebedor';
+        $this->amount = $amount;
+        $this->payer = $payer;
+        $this->payee = $payee;
+    }
+    
+    /**
+     * @return float
+     */
+    public function getAmount(): float
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @param float $amount
+     */
+    public function setAmount(float $amount): void
+    {
+        $this->amount = $amount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPayer(): int
+    {
+        return $this->payer;
+    }
+
+    /**
+     * @param int $payer
+     */
+    public function setPayer(int $payer): void
+    {
+        $this->payer = $payer;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPayee(): int
+    {
+        return $this->payee;
+    }
+
+    /**
+     * @param int $payee
+     */
+    public function setPayee(int $payee): void
+    {
+        $this->payee = $payee;
     }
 }

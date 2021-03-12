@@ -4,7 +4,7 @@ namespace Tests\Model\ValueObjects;
 
 
 use App\Model\Exception\InvalidEnum;
-use App\Model\ValueObjects\Currency;
+use App\Model\VO\Currency;
 use PHPUnit\Framework\TestCase;
 
 class CurrencyTest extends TestCase

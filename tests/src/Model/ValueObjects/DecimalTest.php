@@ -3,7 +3,7 @@
 namespace Tests\Model\ValueObjects;
 
 
-use App\Model\ValueObjects\Decimal;
+use App\Model\VO\Decimal;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

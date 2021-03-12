@@ -2,7 +2,7 @@
 
 namespace Tests\Model\ValueObjects;
 
-use App\Model\ValueObjects\StrValue;
+use App\Model\VO\StrValue;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

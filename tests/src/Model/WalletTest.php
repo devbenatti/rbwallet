@@ -2,10 +2,10 @@
 
 namespace Tests\Model;
 
+use App\DTO\TransactionDTO;
 use App\Model\Exception\InsufficientFundsException;
-use App\Model\Transaction\Transaction;
-use App\Model\ValueObjects\DocumentType;
-use App\Model\ValueObjects\TransactionType;
+use App\Model\VO\DocumentType;
+use App\Model\VO\TransactionType;
 use App\Model\Wallet\Wallet;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -30,7 +30,7 @@ class WalletTest extends TestCase
         
         $transactionData = $this->getTransactionData();
         
-        $transaction = Transaction::build($transactionData);
+        $transaction = TransactionDTO::build($transactionData);
         
         $wallet->updateBalance($transaction);
         
@@ -51,7 +51,7 @@ class WalletTest extends TestCase
             'type' => TransactionType::DEBIT
         ]);
 
-        $transaction = Transaction::build($transactionData);
+        $transaction = TransactionDTO::build($transactionData);
 
         $this->expectException(InsufficientFundsException::class);
         

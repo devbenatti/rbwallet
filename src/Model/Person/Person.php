@@ -2,10 +2,10 @@
 
 namespace App\Model\Person;
 
-use App\Model\ValueObjects\Document;
-use App\Model\ValueObjects\Email;
-use App\Model\ValueObjects\FullName;
-use App\Model\ValueObjects\Uuid;
+use App\Model\VO\Document;
+use App\Model\VO\Email;
+use App\Model\VO\FullName;
+use App\Model\VO\Uuid;
 use App\Model\Relation;
 
 interface Person extends Relation

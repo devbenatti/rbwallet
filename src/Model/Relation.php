@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-interface Relation
+interface Relation extends Immutable
 {
     public function toArray(): array;
 }

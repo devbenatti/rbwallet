@@ -1,6 +1,6 @@
 <?php
 
-use App\Command\Transaction\TransactionAction;
+use App\Driver\API\Action\TransactionAction;
 use Slim\App;
 
 return function (App $app) {

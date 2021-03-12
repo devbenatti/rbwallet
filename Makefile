@@ -10,3 +10,6 @@ composer-require:
 
 composer-require-dev:
 	- ${DOCKER_RUN} composer require --dev ${call args}
+ 
+test:
+	- ${DOCKER_RUN} composer run test

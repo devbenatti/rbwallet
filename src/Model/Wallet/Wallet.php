@@ -2,21 +2,22 @@
 
 namespace App\Model\Wallet;
 
+use App\DTO\TransactionDTO;
 use App\Model\Exception\InsufficientFundsException;
-use App\Model\Immutability;
+use App\Model\ImmutableCapabilities;
 use App\Model\Person\Owner;
 use App\Model\Person\Person;
-use App\Model\Transaction\Transaction;
-use App\Model\ValueObjects\Currency;
-use App\Model\ValueObjects\Decimal;
-use App\Model\ValueObjects\Money;
-use App\Model\ValueObjects\PositiveInt;
-use App\Model\ValueObjects\TransactionType;
+use App\Model\VO\Currency;
+use App\Model\VO\Decimal;
+use App\Model\VO\Money;
+
+use App\Model\VO\PositiveInt;
+use App\Model\VO\TransactionType;
 use ReflectionException;
 
 final class Wallet
 {
-    use Immutability;
+    use ImmutableCapabilities;
     
     private PositiveInt $id;
     
@@ -54,10 +55,10 @@ final class Wallet
     }
 
     /**
-     * @param Transaction $transaction
+     * @param TransactionDTO $transaction
      * @throws InsufficientFundsException
      */
-    public function updateBalance(Transaction $transaction): void 
+    public function updateBalance(TransactionDTO $transaction): void 
     {
         $transactionType = $transaction->getType()->getValue();
         

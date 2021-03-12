@@ -2,7 +2,7 @@
 
 namespace Tests\Model\ValueObjects;
 
-use App\Model\ValueObjects\Uuid;
+use App\Model\VO\Uuid;
 use PHPUnit\Framework\TestCase;
 
 class UuidTest extends TestCase

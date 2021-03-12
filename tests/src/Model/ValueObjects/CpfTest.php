@@ -2,7 +2,7 @@
 
 namespace Tests\Model\ValueObjects;
 
-use App\Model\ValueObjects\Cpf;
+use App\Model\VO\Cpf;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

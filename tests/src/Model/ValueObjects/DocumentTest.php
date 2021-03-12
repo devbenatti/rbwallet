@@ -3,7 +3,7 @@
 namespace Tests\Model\ValueObjects;
 
 
-use App\Model\ValueObjects\Document;
+use App\Model\VO\Document;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

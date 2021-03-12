@@ -2,7 +2,7 @@
 
 namespace Tests\Model\ValueObjects;
 
-use App\Model\ValueObjects\Money;
+use App\Model\VO\Money;
 use PHPUnit\Framework\TestCase;
 
 class MoneyTest extends TestCase

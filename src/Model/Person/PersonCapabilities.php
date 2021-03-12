@@ -2,16 +2,16 @@
 
 namespace App\Model\Person;
 
-use App\Model\Immutability;
-use App\Model\ValueObjects\Document;
-use App\Model\ValueObjects\Email;
-use App\Model\ValueObjects\FullName;
-use App\Model\ValueObjects\Uuid;
+use App\Model\ImmutableCapabilities;
+use App\Model\VO\Document;
+use App\Model\VO\Email;
+use App\Model\VO\FullName;
+use App\Model\VO\Uuid;
 use ReflectionException;
 
 trait PersonCapabilities
 {
-    use Immutability;
+    use ImmutableCapabilities;
 
     private Uuid $id;
 

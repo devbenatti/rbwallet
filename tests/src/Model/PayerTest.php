@@ -3,7 +3,7 @@
 namespace Tests\Model;
 
 use App\Model\Person\Payer;
-use App\Model\ValueObjects\DocumentType;
+use App\Model\VO\DocumentType;
 use PHPUnit\Framework\TestCase;
 
 class PayerTest extends TestCase
