@@ -24,12 +24,12 @@ final class PersonDAO
     {
         return Payer::build([
             'id' => '5f63d951-5439-444b-9a05-e29d80b85da5',
-            'email' => 'renato.benatti@gmail.com',
+            'email' => 'xablau@gmail.com',
             'document' => [
                 'type' => DocumentType::CPF,
-                'identifier' => '09749067940'
+                'identifier' => '09448045690'
             ],
-            'name' => 'Renato Benatti'
+            'name' => 'Xablau Teste'
         ]);
     }
 }
