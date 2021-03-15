@@ -11,15 +11,15 @@ final class Transaction implements Command
     
     private float $amount;
     
-    private int $payer;
+    private int $payerId;
     
-    private int $payee;
+    private int $payeeId;
     
     public function __construct(float $amount, int $payer, int $payee)
     {
         $this->amount = $amount;
-        $this->payer = $payer;
-        $this->payee = $payee;
+        $this->payerId = $payer;
+        $this->payeeId = $payee;
     }
     
     /**
@@ -41,32 +41,32 @@ final class Transaction implements Command
     /**
      * @return int
      */
-    public function getPayer(): int
+    public function getPayerId(): int
     {
-        return $this->payer;
+        return $this->payerId;
     }
 
     /**
-     * @param int $payer
+     * @param int $payerId
      */
-    public function setPayer(int $payer): void
+    public function setPayerId(int $payerId): void
     {
-        $this->payer = $payer;
+        $this->payerId = $payerId;
     }
 
     /**
      * @return int
      */
-    public function getPayee(): int
+    public function getPayeeId(): int
     {
-        return $this->payee;
+        return $this->payeeId;
     }
 
     /**
-     * @param int $payee
+     * @param int $payeeId
      */
-    public function setPayee(int $payee): void
+    public function setPayeeId(int $payeeId): void
     {
-        $this->payee = $payee;
+        $this->payeeId = $payeeId;
     }
 }

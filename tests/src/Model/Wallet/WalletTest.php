@@ -1,9 +1,10 @@
 <?php
 
-namespace Tests\Model;
+namespace Tests\Model\Wallet;
 
-use App\DTO\TransactionDTO;
 use App\Model\Exception\InsufficientFundsException;
+use App\Model\Wallet\Flow;
+use App\Model\Wallet\Transaction;
 use App\Model\VO\DocumentType;
 use App\Model\VO\TransactionType;
 use App\Model\Wallet\Wallet;
@@ -30,16 +31,18 @@ class WalletTest extends TestCase
         
         $transactionData = $this->getTransactionData();
         
-        $transaction = TransactionDTO::build($transactionData);
+        $transaction = Transaction::build($transactionData);
         
-        $wallet->updateBalance($transaction);
+        $inFlow = Flow::buildCashInflow($transaction);
+        
+        $wallet->updateBalance($inFlow);
         
         $balance = $walletData['balance'] + $transactionData['amount'];
         
         static::assertEquals($balance, $wallet->getBalance()->getValue());
     }
     
-    public function testUpdateBalanceShouldReturnException()
+    public function testUpdateBalanceShouldReturnInsufficientFundsException()
     {
         $walletData = $this->getWalletData([
             'balance' => 10.0
@@ -47,15 +50,14 @@ class WalletTest extends TestCase
 
         $wallet = Wallet::build($walletData);
 
-        $transactionData = $this->getTransactionData([
-            'type' => TransactionType::DEBIT
-        ]);
+        $transactionData = $this->getTransactionData();
 
-        $transaction = TransactionDTO::build($transactionData);
+        $transaction = Transaction::build($transactionData);
+        $outFlow = Flow::buildCashOutflow($transaction);
 
         $this->expectException(InsufficientFundsException::class);
         
-        $wallet->updateBalance($transaction);
+        $wallet->updateBalance($outFlow);
     }
     
     /**
@@ -79,10 +81,10 @@ class WalletTest extends TestCase
     {
         return array_filter(
             array_merge([
-                'id' => 1,
+                'id' => '6a3b23ab-2f5c-4ed0-acb0-8948d72f994a',
                 'balance' => 200.00,
-                'owner' => [
-                    'id' => '5f63d951-5439-444b-9a05-e29d80b85da5',
+                'person' => [
+                    'id' => 1,
                     'document' => [
                         'type' => DocumentType::CPF,
                         'identifier' => '05719027540'
@@ -103,10 +105,9 @@ class WalletTest extends TestCase
         return array_filter(
             array_merge([
                 'code' => '1a883e5d-1552-4af9-a214-2825d7e1e2b8',
-                'type' => TransactionType::CREDIT,
                 'amount' => 100.00,
-                'origin' => 1,
-                'destination' => 2
+                'payerId' => 1,
+                'payeeId' => 2
             ], $data)
         );
     }

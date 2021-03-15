@@ -15,6 +15,7 @@ services:
     environment:
       XDEBUG_CONFIG: remote_host=172.17.0.1
       PHP_IDE_CONFIG: "serverName=xdebug-docker"
+    dns: 8.8.8.8
     expose:
       - 9000
     ports:

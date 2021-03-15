@@ -20,7 +20,10 @@ $callableResolver = $app->getCallableResolver();
 $routes = require __DIR__ . '/../src/routes.php';
 $routes($app);
 
+$app->addBodyParsingMiddleware();
 // Add Routing Middleware
 $app->addRoutingMiddleware();
+
+$errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
 $app->run();

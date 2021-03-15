@@ -4,9 +4,10 @@ namespace Tests\Command\Transaction;
 
 use App\Command\Transaction\Transaction;
 use App\Command\Transaction\TransactionHandler;
-use App\Driven\Database\DAO\PersonDAO;
-use App\Model\Person\Payer;
+use App\Driven\Database\DAO\TransactionDAO;
 use App\Model\VO\DocumentType;
+use App\Model\Wallet\Wallet;
+use App\Model\Wallet\WalletRepository;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 
@@ -25,25 +26,30 @@ class TestTransactionHandler extends TestCase
      */
     public function testSuccess()
     {
-        $payer = Payer::build([
-            'id' => '5f63d951-5439-444b-9a05-e29d80b85da5',
-            'email' => 'renato.benatti@gmail.com',
-            'document' => [
-                'type' => DocumentType::CPF,
-                'identifier' => '09749067940'
-            ],
-            'name' => 'Renato Benatti'
+        $wallet = Wallet::build([
+            'id' => 'b5e8469e-5048-48ce-8032-4e7cc87b4923',
+            'balance' => 200.00,
+            'person' => [
+                'id' => 1,
+                'document' => [
+                    'type' => DocumentType::CPF,
+                    'identifier' => '05719027540'
+                ],
+                'email' => 'xablau@gmail.com',
+                'name' => 'Xablau testador'
+            ]
         ]);
         
-        $personDAO = $this->createMock(PersonDAO::class);
+        $transactionDAO = $this->createMock(TransactionDAO::class);
         
-        $personDAO->method('getById')
+        $walletRepository = $this->createMock(WalletRepository::class);
+        $walletRepository->method('findByPerson')
             ->withAnyParameters()
-            ->willReturn($payer);
-
+            ->willReturn($wallet);
+        
         $command = new Transaction( 200.00,1, 2);
         
-        $handler = new TransactionHandler($personDAO);
+        $handler = new TransactionHandler($walletRepository, $transactionDAO);
         
         $handler->handle($command);
         

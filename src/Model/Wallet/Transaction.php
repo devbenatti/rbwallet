@@ -1,9 +1,10 @@
 <?php
 
-namespace App\DTO;
+namespace App\Model\Wallet;
 
 use App\Model\ImmutableCapabilities;
 use App\Model\VO\Currency;
+use App\Model\VO\DBint;
 use App\Model\VO\Money;
 use App\Model\VO\PositiveInt;
 use App\Model\VO\TransactionStatus;
@@ -11,38 +12,42 @@ use App\Model\VO\TransactionType;
 use App\Model\VO\Uuid;
 use ReflectionException;
 
-final class TransactionDTO
+final class Transaction
 {
     use ImmutableCapabilities;
     
     private Uuid $code;
     
-    private TransactionType $type;
-    
     private Money $amount;
     
     private TransactionStatus $status;
     
-    private PositiveInt $origin;
+    private DBint $payerId;
     
-    private PositiveInt $destination;
+    private DBint $payeeId;
     
     public function __construct(
         Uuid $code,
-        TransactionType $type,
         Money $amount,
         TransactionStatus $status,
-        PositiveInt $origin,
-        PositiveInt $destination
+        PositiveInt $payerId,
+        PositiveInt $payeeId
     ) {
         $this->code = $code;
-        $this->type = $type;
         $this->amount = $amount;
         $this->status = $status;
-        $this->origin = $origin;
-        $this->destination = $destination;
+        $this->payerId = $payerId;
+        $this->payeeId = $payeeId;
     }
 
+    /**
+     * @return Uuid
+     */
+    public function getCode(): Uuid
+    {
+        return $this->code;
+    }
+    
     /**
      * @return Money
      */
@@ -50,33 +55,24 @@ final class TransactionDTO
     {
         return $this->amount;
     }
-
-    /**
-     * @return TransactionType
-     */
-    public function getType(): TransactionType
-    {
-        return $this->type;
-    }
-
+    
     /**
      * @param array $data
-     * @return TransactionDTO
+     * @return Transaction
      * @throws ReflectionException
      */
-    public static function build(array $data): TransactionDTO
+    public static function build(array $data): Transaction
     {
         $code = new Uuid($data['code']);
-        $type = new TransactionType($data['type']);
         $amount = Money::build([
             'amount' => $data['amount'],
             'currency' => Currency::BRL
         ]);
         $status = new TransactionStatus(TransactionStatus::PENDING);
-        $origin = new PositiveInt($data['origin']);
-        $destination = new PositiveInt($data['destination']);
+        $origin = new DBint($data['payerId']);
+        $destination = new DBint($data['payeeId']);
         
-        return new static($code, $type, $amount, $status, $origin, $destination);
+        return new static($code, $amount, $status, $origin, $destination);
     }
 
 }

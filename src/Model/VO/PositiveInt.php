@@ -4,7 +4,7 @@ namespace App\Model\VO;
 
 use InvalidArgumentException;
 
-final class PositiveInt
+class PositiveInt
 {
     use VOCapabilities;
     

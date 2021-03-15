@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Model\Person;
+namespace App\Model\Wallet;
 
 use App\Model\ImmutableCapabilities;
+use App\Model\VO\DBint;
 use App\Model\VO\Document;
+use App\Model\VO\DocumentType;
 use App\Model\VO\Email;
 use App\Model\VO\FullName;
-use App\Model\VO\Uuid;
 use ReflectionException;
 
-trait PersonCapabilities
+final class Person
 {
     use ImmutableCapabilities;
 
-    private Uuid $id;
+    private DBint $id;
 
     private Document $document;
     
@@ -24,39 +25,35 @@ trait PersonCapabilities
 
     /**
      * Payer constructor.
-     * @param Uuid $id
+     * @param DBint $id
      * @param Document $document
      * @param Email $email
      * @param FullName $name
      */
-    public function __construct(Uuid $id, Document $document, Email $email, FullName $name)
+    public function __construct(DBint $id, Document $document, Email $email, FullName $name)
     {
         $this->id = $id;
         $this->document = $document;
         $this->email = $email;
         $this->name = $name;
     }
-
-
-    public function getDocument(): Document
+    
+    /**
+     * @return bool
+     */
+    public function isMerchant(): bool
     {
-        return $this->document;
+        return $this->document->getType()->getValue() == DocumentType::CNPJ;
     }
-
-    public function getId(): Uuid
+    
+    /**
+     * @return DBint
+     */
+    public function getId(): DBint
     {
         return $this->id;
     }
     
-    public function getEmail(): Email
-    {
-        return $this->email;
-    }
-    
-    public function getName(): FullName
-    {
-        return $this->name;
-    }
     
     /**
      * @param array $data
@@ -65,7 +62,7 @@ trait PersonCapabilities
      */
     public static function build(array $data): self
     {
-        $id = new Uuid($data['id']);
+        $id = new DBint($data['id']);
         $document = Document::build($data['document']['type'], $data['document']['identifier']);
         $email = new Email($data['email']);
         $name = new FullName($data['name']);

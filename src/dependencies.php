@@ -2,13 +2,20 @@
 
 use App\Command\Transaction\TransactionHandler;
 use App\Driven\Database\DAO\PersonDAO;
+use App\Driven\Database\DAO\TransactionDAO;
 use App\Driven\Database\Repository\MysqlWalletRepository;
+use App\Driven\Http\Authorizer;
+use App\Driven\Http\TransactionAuthorizer;
+use App\Driven\Uuid\UuidAdapter;
+use App\Driven\Uuid\UuidGenerator;
 use App\Driver\API\Action\TransactionAction;
 use App\Model\Wallet\WalletRepository;
 use DI\ContainerBuilder;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Client\ClientInterface;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
@@ -27,14 +34,31 @@ return function (ContainerBuilder $containerBuilder) {
         PersonDAO::class => function (ContainerInterface $c) {
             return new PersonDAO($c->get(Connection::class));
         },
+        WalletRepository::class => function (ContainerInterface $c) {
+            return new MysqlWalletRepository($c->get(Connection::class));
+        },
+        TransactionDAO::class => function (ContainerInterface $c) {
+            return new TransactionDAO($c->get(Connection::class));
+        },
+        UuidGenerator::class => function () {
+            return new UuidAdapter();
+        },
+        ClientInterface::class => function () {
+            return new Client();
+        },
+        TransactionAuthorizer::class => function (ContainerInterface $c) {
+            return new Authorizer($c->get(ClientInterface::class));
+        },
         TransactionHandler::class => function (ContainerInterface $c) {
-            return new TransactionHandler($c->get(PersonDAO::class));
+            return new TransactionHandler(
+                $c->get(WalletRepository::class),
+                $c->get(TransactionDAO::class),
+                $c->get(UuidGenerator::class),
+                $c->get(TransactionAuthorizer::class)
+            );
         },
         TransactionAction::class => function (ContainerInterface $c) {
             return new TransactionAction($c->get(TransactionHandler::class));
         },
-        WalletRepository::class => function (ContainerInterface $c) {
-            return new MysqlWalletRepository($c->get(Connection::class));
-        }
     ]);
 };

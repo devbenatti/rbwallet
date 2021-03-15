@@ -5,8 +5,12 @@ namespace App\Model\Wallet;
 interface WalletRepository
 {
     public function create(): void;
+
+    /**
+     * @param int $personId
+     * @return Wallet|null
+     */
+    public function findByPerson(int $personId): ?Wallet;
     
-    public function findByOwner(): Wallet;
-    
-    public function updateBalance(): void;
+    public function updateBalance(Wallet $wallet): void;
 }

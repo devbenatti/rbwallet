@@ -2,40 +2,36 @@
 
 namespace App\Model\Wallet;
 
-use App\DTO\TransactionDTO;
 use App\Model\Exception\InsufficientFundsException;
 use App\Model\ImmutableCapabilities;
-use App\Model\Person\Owner;
-use App\Model\Person\Person;
 use App\Model\VO\Currency;
 use App\Model\VO\Decimal;
 use App\Model\VO\Money;
-
-use App\Model\VO\PositiveInt;
 use App\Model\VO\TransactionType;
+use App\Model\VO\Uuid;
 use ReflectionException;
 
 final class Wallet
 {
     use ImmutableCapabilities;
     
-    private PositiveInt $id;
+    private Uuid $id;
     
     private Money $balance;
     
-    private Person $owner;
+    private Person $person;
 
     /**
      * Wallet constructor.
-     * @param PositiveInt $id
+     * @param Uuid $id
      * @param Money $balance
-     * @param Person $owner
+     * @param Person $person
      */
-    public function __construct(PositiveInt $id, Money $balance, Person $owner)
+    public function __construct(Uuid $id, Money $balance, Person $person)
     {
         $this->balance = $balance;
         $this->id = $id;
-        $this->owner = $owner;
+        $this->person = $person;
     }
 
     /**
@@ -55,19 +51,19 @@ final class Wallet
     }
 
     /**
-     * @param TransactionDTO $transaction
+     * @param Flow $flow
      * @throws InsufficientFundsException
      */
-    public function updateBalance(TransactionDTO $transaction): void 
+    public function updateBalance(Flow $flow): void 
     {
-        $transactionType = $transaction->getType()->getValue();
+        $flowType = $flow->getType();
         
-        if ($transactionType == TransactionType::DEBIT) {
-            $this->debitAmount($transaction->getAmount());
+        if ($flowType == Flow::OUTFLOW) {
+            $this->debitAmount($flow->getValue());
         }
 
-        if ($transactionType == TransactionType::CREDIT) {
-            $this->creditAmount($transaction->getAmount());
+        if ($flowType == TransactionType::CREDIT) {
+            $this->creditAmount($flow->getValue());
         }
     }
 
@@ -99,21 +95,21 @@ final class Wallet
      */
     public static function build(array $data): Wallet
     {
-        $id = new PositiveInt($data['id']);
+        $id = new Uuid($data['id']);
         
         $balance = Money::build([
             'amount'=> $data['balance'],
             'currency' => Currency::BRL
         ]);
         
-        $owner = Owner::build([
-            'id' => $data['owner']['id'],
+        $owner = Person::build([
+            'id' => $data['person']['id'],
             'document' => [
-                'type' => $data['owner']['document']['type'],
-                'identifier' => $data['owner']['document']['identifier']
+                'type' => $data['person']['document']['type'],
+                'identifier' => $data['person']['document']['identifier']
             ],
-            'email' => $data['owner']['email'],
-            'name' => $data['owner']['name']
+            'email' => $data['person']['email'],
+            'name' => $data['person']['name']
         ]);
         
         return new static($id, $balance, $owner);
@@ -127,7 +123,7 @@ final class Wallet
         return [
           'id' => $this->id->getValue(),
           'balance' =>  $this->balance->getAmount()->getValue(),
-          'owner' => $this->owner->toArray()
+          'person' => $this->person->toArray()
         ];
     }
 

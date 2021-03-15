@@ -4,7 +4,6 @@ namespace App\Driver\API\Action;
 
 use App\Command\CommandHandler;
 use App\Command\Transaction\Transaction;
-use App\Model\VO\Currency;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -24,7 +23,9 @@ final class TransactionAction implements Action
     
     public function __invoke(Request $request, Response $response): Response
     {
-        $command = new Transaction( 200.00,1, 2);
+        $parsedBody = $request->getParsedBody();
+        
+        $command = new Transaction( $parsedBody['value'],$parsedBody['payer'], $parsedBody['payee']);
         
         $this->handler->handle($command);
         

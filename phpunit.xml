@@ -1,22 +1,20 @@
-<phpunit 
-        bootstrap="tests/bootstrap.php"
-        backupGlobals="false"
-        backupStaticAttributes="false"
-        verbose="true"
-        colors="false"
-        forceCoversAnnotation="true"
-        convertErrorsToExceptions="true"
-        convertNoticesToExceptions="true"
-        convertWarningsToExceptions="true"
-        processIsolation="false"
-        stopOnFailure="false">
-    <testsuites>
-        <testsuite name="Test Suite">
-            <directory>tests/src</directory>
-        </testsuite>
-    </testsuites>
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="tests/bootstrap.php"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         verbose="true"
+         colors="false"
+         forceCoversAnnotation="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+    <testsuite name="rbwallet - Testsuite">
+        <directory>tests/src</directory>
+    </testsuite>
     <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+        <whitelist>
             <directory suffix=".php">./src/</directory>
         </whitelist>
     </filter>

@@ -12,4 +12,9 @@ trait DAOCapabilities
     {
         $this->database = $database;
     }
+
+    public function getDatabase(): Connection
+    {
+        return $this->database;
+    }
 }
