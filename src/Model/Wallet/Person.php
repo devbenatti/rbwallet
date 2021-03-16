@@ -53,7 +53,6 @@ final class Person
         return $this->id;
     }
     
-    
     /**
      * @param array $data
      * @return static

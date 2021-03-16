@@ -11,16 +11,16 @@ final class Money
     
     private  Currency $currency;
     
-    private Decimal $amount;
+    private Decimal $value;
 
     /**
      * PositiveDecimal constructor.
-     * @param Decimal $amount
+     * @param Decimal $value
      * @param Currency $currency
      */
-    public function __construct(Decimal $amount, Currency $currency)
+    public function __construct(Decimal $value, Currency $currency)
     {
-        $this->amount = $amount;
+        $this->value = $value;
         $this->currency = $currency;
     }
 
@@ -30,11 +30,11 @@ final class Money
      */
     public function add(Money $toAdd): Money
     {
-        if ($toAdd->amount === 0) {
+        if ($toAdd->value === 0) {
             return $this;
         }
         
-        return new static($this->amount->add($toAdd->getAmount()), $this->currency);
+        return new static($this->value->add($toAdd->getValue()), $this->currency);
     }
 
     /**
@@ -43,11 +43,11 @@ final class Money
      */
     public function sub(Money $toSub): Money
     {
-        if ($toSub->amount === 0) {
+        if ($toSub->value === 0) {
             return $this;
         }
         
-        return new static($this->amount->sub($toSub->getAmount()), $this->currency);
+        return new static($this->value->sub($toSub->getValue()), $this->currency);
     }
 
     /**
@@ -66,9 +66,9 @@ final class Money
     /**
      * @return Decimal
      */
-    public function getAmount(): Decimal
+    public function getValue(): Decimal
     {
-        return $this->amount;
+        return $this->value;
     }
 }
 

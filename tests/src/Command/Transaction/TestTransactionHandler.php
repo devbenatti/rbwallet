@@ -7,9 +7,6 @@ use App\Command\Transaction\TransactionHandler;
 use App\Driven\Database\DAO\TransactionDAO;
 use App\Driven\Http\Authorizer;
 use App\Driven\Http\TransactionAuthorizer;
-use App\Driven\Uuid\UuidAdapter;
-use App\Driven\Uuid\UuidGenerator;
-use App\Model\VO\DocumentType;
 use App\Model\VO\FailReason;
 use App\Model\VO\TransactionStatus;
 use App\Model\VO\Uuid;
@@ -25,36 +22,54 @@ use ReflectionException;
  */
 class TestTransactionHandler extends TestCase
 {
+
     /**
-     * @covers ::handle
-     * @covers ::__construct
-     * @covers ::__invoke
      * @throws ReflectionException
      */
     public function testSuccess()
     {
-        $walletData = $this->getWalletData();
+        $code = new Uuid('6a3b23ab-2f5c-4ed0-acb0-8948d72f994a');
         
-        $wallet = Wallet::build($walletData);
+        $payerWalletData = $this->getWalletData();
+        $payerUpdatedWalletData = $this->getWalletData([
+            'balance' => 0.01
+        ]);
+        
+        $payeeWalletData = $this->getWalletData([
+            'ownerId' => 2
+        ]);
+        $payeeUpdatedWalletData = $this->getWalletData([
+            'ownerId' => 2,
+            'balance' => 399.99
+        ]);
+        
+        $payerWallet = Wallet::build($payerWalletData);
+        $payerUpdatedWallet = Wallet::build($payerUpdatedWalletData);
+        
+        $payeeWallet = Wallet::build($payeeWalletData);
+        $payeeUpdatedWallet = Wallet::build($payeeUpdatedWalletData);
         
         $transactionDAO = $this->createMock(TransactionDAO::class);
+        $transactionDAO->expects(static::once())
+            ->method('updateStatus')
+            ->withConsecutive([$code, TransactionStatus::SUCCESS]);
         
         $walletRepository = $this->createMock(WalletRepository::class);
         $walletRepository->method('findByPerson')
-            ->withAnyParameters()
-            ->willReturn($wallet);
+            ->withConsecutive([1], [2])
+            ->willReturnOnConsecutiveCalls($payerWallet, $payeeWallet);
+        
+        $walletRepository->expects(static::exactly(2))
+            ->method('updateBalance')
+            ->withConsecutive([$payerUpdatedWallet], [$payeeUpdatedWallet]);
         
         $authorizer = $this->createMock(TransactionAuthorizer::class);
-
-        $code = new Uuid('6a3b23ab-2f5c-4ed0-acb0-8948d72f994a');
         
-        $command = new Transaction($code,200.00,1, 2);
+        $command = new Transaction($code,199.99,1, 2);
         
         $handler = new TransactionHandler($walletRepository, $transactionDAO, $authorizer);
         
         $handler->handle($command);
-        
-        static::expectNotToPerformAssertions();
     }
     
     public function testWalletWithoutBalanceShouldUpdateTransactionToNotCompleted()

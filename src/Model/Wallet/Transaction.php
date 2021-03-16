@@ -54,7 +54,32 @@ final class Transaction
     {
         return $this->amount;
     }
-    
+
+    /**
+     * @return TransactionStatus
+     */
+    public function getStatus(): TransactionStatus
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return DBint|PositiveInt
+     */
+    public function getPayerId()
+    {
+        return $this->payerId;
+    }
+
+    /**
+     * @return DBint|PositiveInt
+     */
+    public function getPayeeId()
+    {
+        return $this->payeeId;
+    }
+
+
     /**
      * @param array $data
      * @return Transaction

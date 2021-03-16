@@ -3,7 +3,7 @@
 namespace Tests\Driver\API\Middleware;
 
 use App\Driven\Database\DAO\PersonDAO;
-use App\Driver\API\Middleware\AuthorizationTransaction;
+use App\Driver\WebApi\Middleware\AuthorizationTransaction;
 use App\Model\Wallet\Person;
 use App\Model\VO\DocumentType;
 use Nyholm\Psr7\Factory\Psr17Factory;

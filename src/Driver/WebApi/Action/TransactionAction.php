@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Driver\API\Action;
+namespace App\Driver\WebApi\Action;
 
 use App\Command\CommandHandler;
 use App\Command\Transaction\Transaction;

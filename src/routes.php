@@ -1,6 +1,6 @@
 <?php
 
-use App\Driver\API\Action\TransactionAction;
+use App\Driver\WebApi\Action\TransactionAction;
 use App\Driver\API\Middleware\AuthorizationTransaction;
 use Slim\App;
 

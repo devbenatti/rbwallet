@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Driver\API\Action;
+namespace App\Driver\WebApi\Action;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;

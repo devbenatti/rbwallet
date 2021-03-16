@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Driver\API\Middleware;
+namespace App\Driver\WebApi\Middleware;
 
 use App\Driven\Database\DAO\PersonDAO;
 use Psr\Http\Message\ResponseInterface as Response;

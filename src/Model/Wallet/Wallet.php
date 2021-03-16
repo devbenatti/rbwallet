@@ -43,12 +43,12 @@ final class Wallet
     {
         $rest = $this->balance->sub($amount);
         
-        return $rest->getAmount()->getValue() >= 0.0;
+        return $rest->getValue()->getValue() >= 0.0;
     }
     
     public function getBalance(): Decimal
     {
-        return $this->balance->getAmount();
+        return $this->balance->getValue();
     }
     
     public function getId(): Uuid
@@ -120,7 +120,7 @@ final class Wallet
     {
         return [
           'id' => $this->id->getValue(),
-          'balance' =>  $this->balance->getAmount()->getValue(),
+          'balance' =>  $this->balance->getValue()->getValue(),
           'ownerId' => $this->ownerId->getValue()
         ];
     }

@@ -71,12 +71,9 @@ final class TransactionHandler implements CommandHandler
             'payeeId' => $command->getPayeeId()
         ]);
         
+        $this->transactionDAO->create($transaction);
+        
         try {
-            
-            $this->transactionDAO->create($transaction);
-            
-            $this->authorizer->authorize();
-            
             $this->transactionDAO->getDatabase()->beginTransaction();
             
             $outFlow = Flow::buildCashOutflow($transaction);
@@ -84,7 +81,8 @@ final class TransactionHandler implements CommandHandler
             $payerWallet->updateBalance($outFlow);
             $this->walletRepository->updateBalance($payerWallet);
             
-
+            $this->authorizer->authorize();
+            
             $inFlow = Flow::buildCashInflow($transaction);
             $payeeWallet = $this->walletRepository->findByPerson($command->getPayeeId());
             $payeeWallet->updateBalance($inFlow);
@@ -96,6 +94,7 @@ final class TransactionHandler implements CommandHandler
             
         } catch (InsufficientFundsException $exception) {
             $this->transactionDAO->getDatabase()->rollBack();
+
             $this->transactionDAO->updateStatus(
                 $this->code,
                 TransactionStatus::FAILED,
@@ -110,6 +109,7 @@ final class TransactionHandler implements CommandHandler
             );
         } catch (Exception $exception) {
             $this->transactionDAO->getDatabase()->rollBack();
+
             $this->transactionDAO->updateStatus(
                 $this->code,
                 TransactionStatus::FAILED,

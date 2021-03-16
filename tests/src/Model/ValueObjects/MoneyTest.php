@@ -14,7 +14,7 @@ class MoneyTest extends TestCase
             'currency' => 'BRL'
         ]);
         
-        static::assertEquals(200.00, $money->getAmount()->getValue());
+        static::assertEquals(200.00, $money->getValue()->getValue());
     }
     
     public function testAddValue()
@@ -31,7 +31,7 @@ class MoneyTest extends TestCase
         
         $result = $money->add($moneyToAdd);
         
-        static::assertEquals(250.00, $result->getAmount()->getValue());
+        static::assertEquals(250.00, $result->getValue()->getValue());
 
     }
     
@@ -49,6 +49,6 @@ class MoneyTest extends TestCase
 
         $result = $money->sub($moneyToSub);
 
-        static::assertEquals(150.00, $result->getAmount()->getValue());
+        static::assertEquals(150.00, $result->getValue()->getValue());
     }
 }
