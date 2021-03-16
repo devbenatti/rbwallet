@@ -44,6 +44,5 @@ class AuthorizationTransaction implements MiddlewareInterface
         }
         
         return $handler->handle($request);
-        
     }
 }

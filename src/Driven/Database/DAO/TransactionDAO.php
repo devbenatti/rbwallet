@@ -22,9 +22,10 @@ final class TransactionDAO
     /**
      * @param Uuid $code
      * @param int $status
+     * @param string $reason
      */
-    public function updateStatus(Uuid $code, int $status): void
+    public function updateStatus(Uuid $code, int $status, string $reason = ''): void
     {
-        
+
     }
 }

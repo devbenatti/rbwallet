@@ -2,9 +2,9 @@
 
 namespace App\Driven\Database\Repository;
 
-use App\Model\VO\DocumentType;
 use App\Model\Wallet\Wallet;
 use App\Model\Wallet\WalletRepository;
+use Doctrine\DBAL\Exception;
 use ReflectionException;
 
 class MysqlWalletRepository implements WalletRepository
@@ -16,30 +16,47 @@ class MysqlWalletRepository implements WalletRepository
 
     }
 
+    /**
+     * @param Wallet $wallet
+     * @throws Exception
+     */
     public function updateBalance(Wallet $wallet): void
     {
-      
+        $this->database->update('wallet', [
+            'balance' => $wallet->getBalance()->getValue()
+        ], [
+            'id' => $wallet->getId()->getValue()
+        ]);
     }
 
     /**
      * @param int $personId
      * @return Wallet|null
-     * @throws ReflectionException
+     * @throws ReflectionException|Exception
      */
     public function findByPerson(int $personId): ?Wallet
     {
+
+        $data = $this->database->createQueryBuilder()
+            ->select([
+                'w.id',
+                'w.balance',
+                'w.user_id'
+            ])
+            ->from('wallet', 'w')
+            ->where('w.user_id = :id')
+            ->setParameter('id', $personId)
+            ->execute()
+            ->fetchAssociative();
+        
+        if (!$data) {
+            throw new Exception();
+        }
+        
         return Wallet::build([
-            'id' => 'b5e8469e-5048-48ce-8032-4e7cc87b4923',
-            'balance' => 200.00,
-            'person' => [
-                'id' => 1,
-                'document' => [
-                    'type' => DocumentType::CPF,
-                    'identifier' => '05719027540'
-                ],
-                'email' => 'xablau@gmail.com',
-                'name' => 'Xablau testador'
-            ]
+            'id' => $data['id'],
+            'balance' => (float)$data['balance'],
+            'ownerId' => (int)$data['user_id']
         ]);
     }
 }

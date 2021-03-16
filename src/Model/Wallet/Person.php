@@ -21,8 +21,7 @@ final class Person
     private Email $email;
     
     private FullName $name;
-
-
+    
     /**
      * Payer constructor.
      * @param DBint $id

@@ -8,7 +8,6 @@ use App\Model\VO\DBint;
 use App\Model\VO\Money;
 use App\Model\VO\PositiveInt;
 use App\Model\VO\TransactionStatus;
-use App\Model\VO\TransactionType;
 use App\Model\VO\Uuid;
 use ReflectionException;
 
@@ -68,7 +67,7 @@ final class Transaction
             'amount' => $data['amount'],
             'currency' => Currency::BRL
         ]);
-        $status = new TransactionStatus(TransactionStatus::PENDING);
+        $status = new TransactionStatus(TransactionStatus::PROCESSING);
         $origin = new DBint($data['payerId']);
         $destination = new DBint($data['payeeId']);
         

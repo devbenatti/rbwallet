@@ -53,12 +53,11 @@ return function (ContainerBuilder $containerBuilder) {
             return new TransactionHandler(
                 $c->get(WalletRepository::class),
                 $c->get(TransactionDAO::class),
-                $c->get(UuidGenerator::class),
                 $c->get(TransactionAuthorizer::class)
             );
         },
         TransactionAction::class => function (ContainerInterface $c) {
-            return new TransactionAction($c->get(TransactionHandler::class));
+            return new TransactionAction($c->get(TransactionHandler::class),$c->get(UuidGenerator::class));
         },
     ]);
 };

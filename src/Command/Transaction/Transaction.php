@@ -9,19 +9,31 @@ final class Transaction implements Command
 {
     use ImmutableCapabilities;
     
+    private string $code;
+    
     private float $amount;
     
     private int $payerId;
     
     private int $payeeId;
     
-    public function __construct(float $amount, int $payer, int $payee)
+    public function __construct(string $code, float $amount, int $payer, int $payee)
     {
+        $this->code = $code;
         $this->amount = $amount;
         $this->payerId = $payer;
         $this->payeeId = $payee;
     }
-    
+
+    /**
+     * @return string
+     */
+    public function getCode(): string
+    {
+        return $this->code;
+    }
+
+
     /**
      * @return float
      */

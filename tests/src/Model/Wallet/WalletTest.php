@@ -5,8 +5,6 @@ namespace Tests\Model\Wallet;
 use App\Model\Exception\InsufficientFundsException;
 use App\Model\Wallet\Flow;
 use App\Model\Wallet\Transaction;
-use App\Model\VO\DocumentType;
-use App\Model\VO\TransactionType;
 use App\Model\Wallet\Wallet;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -83,15 +81,7 @@ class WalletTest extends TestCase
             array_merge([
                 'id' => '6a3b23ab-2f5c-4ed0-acb0-8948d72f994a',
                 'balance' => 200.00,
-                'person' => [
-                    'id' => 1,
-                    'document' => [
-                        'type' => DocumentType::CPF,
-                        'identifier' => '05719027540'
-                    ],
-                    'email' => 'xablau@gmail.com',
-                    'name' => 'Xablau testador'
-                ]
+                'ownerId' => 1
             ], $data)
         );
     }

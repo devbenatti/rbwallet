@@ -5,6 +5,7 @@ namespace App\Model\Wallet;
 use App\Model\Exception\InsufficientFundsException;
 use App\Model\ImmutableCapabilities;
 use App\Model\VO\Currency;
+use App\Model\VO\DBint;
 use App\Model\VO\Decimal;
 use App\Model\VO\Money;
 use App\Model\VO\TransactionType;
@@ -19,19 +20,19 @@ final class Wallet
     
     private Money $balance;
     
-    private Person $person;
+    private DBint $ownerId;
 
     /**
      * Wallet constructor.
      * @param Uuid $id
      * @param Money $balance
-     * @param Person $person
+     * @param DBint $ownerId
      */
-    public function __construct(Uuid $id, Money $balance, Person $person)
+    public function __construct(Uuid $id, Money $balance, DBint $ownerId)
     {
         $this->balance = $balance;
         $this->id = $id;
-        $this->person = $person;
+        $this->ownerId = $ownerId;
     }
 
     /**
@@ -48,6 +49,11 @@ final class Wallet
     public function getBalance(): Decimal
     {
         return $this->balance->getAmount();
+    }
+    
+    public function getId(): Uuid
+    {
+        return $this->id;
     }
 
     /**
@@ -102,17 +108,9 @@ final class Wallet
             'currency' => Currency::BRL
         ]);
         
-        $owner = Person::build([
-            'id' => $data['person']['id'],
-            'document' => [
-                'type' => $data['person']['document']['type'],
-                'identifier' => $data['person']['document']['identifier']
-            ],
-            'email' => $data['person']['email'],
-            'name' => $data['person']['name']
-        ]);
+        $ownerId = new DBint($data['ownerId']);
         
-        return new static($id, $balance, $owner);
+        return new static($id, $balance, $ownerId);
     }
 
     /**
@@ -123,7 +121,7 @@ final class Wallet
         return [
           'id' => $this->id->getValue(),
           'balance' =>  $this->balance->getAmount()->getValue(),
-          'person' => $this->person->toArray()
+          'ownerId' => $this->ownerId->getValue()
         ];
     }
 

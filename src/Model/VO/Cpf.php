@@ -9,9 +9,14 @@ final class Cpf
     use VOCapabilities;
 
     /**
+     * @var int
+     */
+    const CPF_LENGTH = 11;
+
+    /**
      * @var array
      */
-    const INVALID_SEQUENCE = [
+    private const INVALID_SEQUENCE = [
         '11111111111',
         '22222222222',
         '33333333333',

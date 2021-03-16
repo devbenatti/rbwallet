@@ -6,7 +6,9 @@ use App\Command\CommandHandler;
 use App\Command\CommandHandlerCapabilities;
 use App\Driven\Database\DAO\TransactionDAO;
 use App\Driven\Http\TransactionAuthorizer;
-use App\Driven\Uuid\UuidGenerator;
+use App\Driven\Http\TransactionUnauthorizedException;
+use App\Model\Exception\InsufficientFundsException;
+use App\Model\VO\FailReason;
 use App\Model\VO\TransactionStatus;
 use App\Model\VO\Uuid;
 use App\Model\Wallet\Flow;
@@ -29,11 +31,6 @@ final class TransactionHandler implements CommandHandler
     private TransactionDAO $transactionDAO;
     
     /**
-     * @var UuidGenerator
-     */
-    private UuidGenerator $uuidAdapter;
-
-    /**
      * @var Uuid 
      */
     private Uuid $code;
@@ -47,18 +44,15 @@ final class TransactionHandler implements CommandHandler
      * TransactionHandler constructor.
      * @param WalletRepository $walletRepository
      * @param TransactionDAO $transactionDAO
-     * @param UuidGenerator $uuidAdapter
      * @param TransactionAuthorizer $authorizer
      */
     public function __construct(
         WalletRepository $walletRepository,
         TransactionDAO $transactionDAO,
-        UuidGenerator $uuidAdapter,
         TransactionAuthorizer $authorizer
     ) {
         $this->walletRepository = $walletRepository;
         $this->transactionDAO = $transactionDAO;
-        $this->uuidAdapter = $uuidAdapter;
         $this->authorizer = $authorizer;
     }
 
@@ -68,10 +62,10 @@ final class TransactionHandler implements CommandHandler
      */
     public function __invoke(Transaction $command): void
     {
-        $this->code = $this->uuidAdapter->generate();
+        $this->code = new Uuid($command->getCode());
         
         $transaction = \App\Model\Wallet\Transaction::build([
-            'code' => $this->code,
+            'code' => $command->getCode(),
             'amount' => $command->getAmount(),
             'payerId' => $command->getPayerId(),
             'payeeId' => $command->getPayeeId()
@@ -89,6 +83,7 @@ final class TransactionHandler implements CommandHandler
             $payerWallet = $this->walletRepository->findByPerson($command->getPayerId());
             $payerWallet->updateBalance($outFlow);
             $this->walletRepository->updateBalance($payerWallet);
+            
 
             $inFlow = Flow::buildCashInflow($transaction);
             $payeeWallet = $this->walletRepository->findByPerson($command->getPayeeId());
@@ -97,11 +92,31 @@ final class TransactionHandler implements CommandHandler
             
             $this->transactionDAO->getDatabase()->commit();
             
-            $this->transactionDAO->updateStatus($transaction->getCode(), TransactionStatus::COMPLETED);
+            $this->transactionDAO->updateStatus($transaction->getCode(), TransactionStatus::SUCCESS);
             
+        } catch (InsufficientFundsException $exception) {
+            $this->transactionDAO->getDatabase()->rollBack();
+            $this->transactionDAO->updateStatus(
+                $this->code,
+                TransactionStatus::FAILED,
+                FailReason::INSUFFICIENT_FUNDS
+            );
+        } catch (TransactionUnauthorizedException $exception) {
+            $this->transactionDAO->getDatabase()->rollBack();
+            $this->transactionDAO->updateStatus(
+                $this->code,
+                TransactionStatus::FAILED,
+                FailReason::UNAUTHORIZED
+            );
         } catch (Exception $exception) {
             $this->transactionDAO->getDatabase()->rollBack();
-            $this->transactionDAO->updateStatus($this->code, TransactionStatus::NOT_COMPLETED);
+            $this->transactionDAO->updateStatus(
+                $this->code,
+                TransactionStatus::FAILED,
+                FailReason::UNKNOWN
+            );
+            
+            throw $exception;
         }
     }
 }

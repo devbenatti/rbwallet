@@ -9,16 +9,15 @@ final class TransactionStatus
     /**
      * @var int
      */
-    const PENDING = 1;
+    const PROCESSING = 1;
 
     /**
      * @var int
      */
-    const COMPLETED = 2;
+    const SUCCESS = 2;
 
     /**
      * @var int
      */
-    const NOT_COMPLETED = 3;
-    
+    const FAILED = 3;
 }
