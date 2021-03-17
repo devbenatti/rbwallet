@@ -5,7 +5,9 @@ use App\Driven\Database\DAO\PersonDAO;
 use App\Driven\Database\DAO\TransactionDAO;
 use App\Driven\Database\Repository\MysqlWalletRepository;
 use App\Driven\Http\Authorizer;
+use App\Driven\Http\Notifier;
 use App\Driven\Http\TransactionAuthorizer;
+use App\Driven\Http\TransactionNotifier;
 use App\Driven\Uuid\UuidAdapter;
 use App\Driven\Uuid\UuidGenerator;
 use App\Driver\WebApi\Action\TransactionAction;
@@ -51,15 +53,22 @@ return function (ContainerBuilder $containerBuilder) {
         TransactionAuthorizer::class => function (ContainerInterface $c) {
             return new Authorizer($c->get(ClientInterface::class));
         },
+        TransactionNotifier::class => function (ContainerInterface $c) {
+            return new Notifier($c->get(ClientInterface::class));
+        },
         TransactionHandler::class => function (ContainerInterface $c) {
             return new TransactionHandler(
                 $c->get(WalletRepository::class),
                 $c->get(TransactionDAO::class),
-                $c->get(TransactionAuthorizer::class)
+                $c->get(TransactionAuthorizer::class),
+                $c->get(TransactionNotifier::class)
             );
         },
         TransactionAction::class => function (ContainerInterface $c) {
-            return new TransactionAction($c->get(TransactionHandler::class),$c->get(UuidGenerator::class));
+            return new TransactionAction(
+                $c->get(TransactionHandler::class),
+                $c->get(UuidGenerator::class)
+            );
         },
         Validator::class => function () {
             return new JsonSchemaValidator();

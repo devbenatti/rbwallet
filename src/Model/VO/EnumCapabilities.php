@@ -22,7 +22,7 @@ trait EnumCapabilities
      */
     public function __construct($value)
     {
-        if (!$this->has($value)) {
+        if (!static::has($value)) {
             throw new InvalidEnum(sprintf('Invalid ENUM for value %s', $value));
         }
 
@@ -33,7 +33,7 @@ trait EnumCapabilities
      * @return array|mixed
      * @throws ReflectionException
      */
-    private function getConstants()
+    public static function getConstants()
     {
         if (self::$constCache == NULL) {
             self::$constCache = [];
@@ -54,8 +54,8 @@ trait EnumCapabilities
      * @return bool
      * @throws ReflectionException
      */
-    private function has($value)
+    public static function has($value)
     {
-        return in_array($value, $this->getConstants(), true);
+        return in_array($value, static::getConstants(), true);
     }
 }

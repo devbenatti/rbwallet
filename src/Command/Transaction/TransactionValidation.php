@@ -3,6 +3,7 @@
 namespace App\Command\Transaction;
 
 use App\Driver\WebApi\Validator\Validation;
+use App\Model\VO\Currency;
 
 final class TransactionValidation implements Validation
 {
@@ -10,11 +11,16 @@ final class TransactionValidation implements Validation
     {
         return [
             'type' => 'object',
-            'required' => ['value', 'payer', 'payee'],
+            'required' => ['amount', 'payer', 'payee', 'currency'],
             'properties' => [
-                'value' => [
+                'amount' => [
                     'type' => 'number',
                     'minimum' => 0.01
+                ],
+                'currency' => [
+                    'type' => [
+                        'enum' => Currency::getConstants()
+                    ]
                 ],
                 'payer' => [
                     'type' => 'number',

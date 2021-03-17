@@ -34,7 +34,7 @@ final class TransactionAction implements Action
         
         $command = new Transaction(
             $code,
-            $parsedBody['value'],
+            $parsedBody['amount'],
             $parsedBody['payer'],
             $parsedBody['payee']
         );

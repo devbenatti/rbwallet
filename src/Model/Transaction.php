@@ -98,4 +98,18 @@ final class Transaction
         return new static($code, $amount, $status, $origin, $destination);
     }
 
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'code' => $this->code->getValue(),
+            'amount' => $this->amount->getValue()->format(),
+            'status' => $this->status->getValue(),
+            'payer' => $this->payerId->getValue(),
+            'payee' => $this->payeeId->getValue()
+        ];
+    }
+
 }
