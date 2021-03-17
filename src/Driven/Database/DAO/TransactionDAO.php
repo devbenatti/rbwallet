@@ -4,7 +4,7 @@
 namespace App\Driven\Database\DAO;
 
 
-use App\Model\Wallet\Transaction;
+use App\Model\Transaction;
 use App\Model\VO\Uuid;
 use Doctrine\DBAL\Exception;
 

@@ -8,8 +8,10 @@ use App\Driven\Http\Authorizer;
 use App\Driven\Http\TransactionAuthorizer;
 use App\Driven\Uuid\UuidAdapter;
 use App\Driven\Uuid\UuidGenerator;
-use App\Driver\API\Action\TransactionAction;
-use App\Model\Wallet\WalletRepository;
+use App\Driver\WebApi\Action\TransactionAction;
+use App\Driver\WebApi\Validator\JsonSchemaValidator;
+use App\Driver\WebApi\Validator\Validator;
+use App\Model\WalletRepository;
 use DI\ContainerBuilder;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
@@ -59,5 +61,8 @@ return function (ContainerBuilder $containerBuilder) {
         TransactionAction::class => function (ContainerInterface $c) {
             return new TransactionAction($c->get(TransactionHandler::class),$c->get(UuidGenerator::class));
         },
+        Validator::class => function () {
+            return new JsonSchemaValidator();
+        }
     ]);
 };

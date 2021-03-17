@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Model\Wallet;
+namespace Tests\Model;
 
 use App\Model\Exception\InsufficientFundsException;
-use App\Model\Wallet\Flow;
-use App\Model\Wallet\Transaction;
-use App\Model\Wallet\Wallet;
+use App\Model\Flow;
+use App\Model\Transaction;
+use App\Model\Wallet;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 

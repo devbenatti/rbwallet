@@ -3,7 +3,7 @@
 namespace App\Driven\Database\DAO;
 
 use App\Model\VO\Cpf;
-use App\Model\Wallet\Person;
+use App\Model\Person;
 use App\Model\VO\DocumentType;
 use Doctrine\DBAL\Exception;
 use ReflectionException;

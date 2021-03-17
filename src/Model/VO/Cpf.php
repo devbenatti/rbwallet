@@ -79,7 +79,7 @@ final class Cpf
      * @param $value
      * @return bool
      */
-    private function isAcceptedType($value)
+    private function isAcceptedType($value): bool
     {
         if (!is_int($value) && !is_string($value)) {
             return false;
@@ -92,7 +92,7 @@ final class Cpf
      * @param $value
      * @return string
      */
-    private function sanitize($value)
+    private function sanitize($value): string
     {
         $sanitizedValue = preg_replace("/[^0-9]/", "", $value);
         return str_pad($sanitizedValue, 11, '0', STR_PAD_LEFT);

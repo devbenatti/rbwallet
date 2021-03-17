@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Model\Wallet;
+namespace App\Model;
 
-use App\Model\ImmutableCapabilities;
 use App\Model\VO\DBint;
 use App\Model\VO\Document;
 use App\Model\VO\DocumentType;

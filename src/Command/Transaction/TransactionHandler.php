@@ -11,8 +11,8 @@ use App\Model\Exception\InsufficientFundsException;
 use App\Model\VO\FailReason;
 use App\Model\VO\TransactionStatus;
 use App\Model\VO\Uuid;
-use App\Model\Wallet\Flow;
-use App\Model\Wallet\WalletRepository;
+use App\Model\Flow;
+use App\Model\WalletRepository;
 use Exception;
 
 final class TransactionHandler implements CommandHandler
@@ -64,7 +64,7 @@ final class TransactionHandler implements CommandHandler
     {
         $this->code = new Uuid($command->getCode());
         
-        $transaction = \App\Model\Wallet\Transaction::build([
+        $transaction = \App\Model\Transaction::build([
             'code' => $command->getCode(),
             'amount' => $command->getAmount(),
             'payerId' => $command->getPayerId(),

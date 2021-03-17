@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model\Wallet;
+namespace App\Model;
 
 interface WalletRepository
 {

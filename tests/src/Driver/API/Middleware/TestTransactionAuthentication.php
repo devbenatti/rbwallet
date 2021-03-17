@@ -4,7 +4,7 @@ namespace Tests\Driver\API\Middleware;
 
 use App\Driven\Database\DAO\PersonDAO;
 use App\Driver\WebApi\Middleware\AuthorizationTransaction;
-use App\Model\Wallet\Person;
+use App\Model\Person;
 use App\Model\VO\DocumentType;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;

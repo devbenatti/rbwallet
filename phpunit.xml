@@ -9,6 +9,7 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
+         cacheResult="false"
          stopOnFailure="false">
     <testsuite name="rbwallet - Testsuite">
         <directory>tests/src</directory>

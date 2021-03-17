@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Model\Wallet;
+namespace App\Model;
 
 use App\Model\Exception\InsufficientFundsException;
-use App\Model\ImmutableCapabilities;
 use App\Model\VO\Currency;
 use App\Model\VO\DBint;
 use App\Model\VO\Decimal;

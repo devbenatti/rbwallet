@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Model\Wallet;
+namespace Tests\Model;
 
-use App\Model\Wallet\Person;
+use App\Model\Person;
 use App\Model\VO\DocumentType;
 use PHPUnit\Framework\TestCase;
 

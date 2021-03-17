@@ -2,8 +2,8 @@
 
 namespace App\Driven\Database\Repository;
 
-use App\Model\Wallet\Wallet;
-use App\Model\Wallet\WalletRepository;
+use App\Model\Wallet;
+use App\Model\WalletRepository;
 use Doctrine\DBAL\Exception;
 use ReflectionException;
 

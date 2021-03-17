@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Model\ValueObjects;
+namespace Tests\Model\VO;
 
 use App\Model\VO\Uuid;
 use PHPUnit\Framework\TestCase;
