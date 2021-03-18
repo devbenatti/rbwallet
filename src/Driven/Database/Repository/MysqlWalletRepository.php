@@ -11,9 +11,13 @@ class MysqlWalletRepository implements WalletRepository
 {
     use RepositoryCapabilities;
 
-    public function create(): void
+    public function create(Wallet $wallet): void
     {
-
+        $this->database->insert('wallet', [
+            'id' => $wallet->getId()->getValue(),
+            'balance' => $wallet->getBalance()->getValue(),
+            'user' => $wallet->getOwnerId()->getValue(),
+        ]);
     }
 
     /**
@@ -41,10 +45,10 @@ class MysqlWalletRepository implements WalletRepository
             ->select([
                 'w.id',
                 'w.balance',
-                'w.user_id'
+                'w.user'
             ])
             ->from('wallet', 'w')
-            ->where('w.user_id = :id')
+            ->where('w.user = :id')
             ->setParameter('id', $personId)
             ->execute()
             ->fetchAssociative();
@@ -56,7 +60,7 @@ class MysqlWalletRepository implements WalletRepository
         return Wallet::build([
             'id' => $data['id'],
             'balance' => (float)$data['balance'],
-            'ownerId' => (int)$data['user_id']
+            'ownerId' => (int)$data['user']
         ]);
     }
 }

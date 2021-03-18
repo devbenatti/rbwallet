@@ -8,6 +8,11 @@ use ReflectionException;
 final class Document
 {
     use ImmutableCapabilities;
+
+    /**
+     * @var string
+     */
+    private const CPF_LENGTH = 11;
     
     private DocumentType $type;
     
@@ -36,13 +41,14 @@ final class Document
     }
 
     /**
-     * @param $type
      * @param $identifier
      * @return Document
      * @throws ReflectionException
      */
-    public static function build($type, $identifier): Document
+    public static function build($identifier): Document
     {
+        $type = strlen($identifier) == self::CPF_LENGTH ? 'CPF' : 'CNPJ';
+        
         $documentType = new DocumentType($type);
         $documentIdentification = new StrValue($identifier);
         

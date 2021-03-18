@@ -29,6 +29,7 @@ services:
   db:
     image: mysql:5.7
     restart: always
+    command: --init-file /data/application/init.sql
     environment:
       MYSQL_DATABASE: onepuchman
       MYSQL_ROOT_PASSWORD: root
@@ -39,3 +40,4 @@ services:
       - '3306'
     volumes:
       - ./db:/var/lib/mysql
+      - ./init.sql:/data/application/init.sql

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Driven\Database\DAO;
-
 
 use App\Model\Transaction;
 use App\Model\VO\Uuid;

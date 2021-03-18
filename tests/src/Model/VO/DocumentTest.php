@@ -12,18 +12,10 @@ class DocumentTest extends TestCase
 
     public function testValidDocument()
     {
-        $document = Document::build('CPF', '07749667910');
+        $document = Document::build('28711186046');
         
-        static::assertEquals('07749667910', $document->getIdentifier()->getValue());
+        static::assertEquals('28711186046', $document->getIdentifier()->getValue());
         static::assertEquals('CPF', $document->getType()->getValue());
-    }
-    
-    public function testInvalidDocumentType()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid ENUM for value RG');
-        
-        Document::build('RG', '07749667910');
     }
     
     public function testInvalidDocumentIdentification()
@@ -31,12 +23,12 @@ class DocumentTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Value need to be string');
 
-        Document::build('CPF', 132);
+        Document::build(132);
     }
     
     public function testValidDocumentShouldBeAnCPF()
     {
-        $document = Document::build('CPF', '07749667910');
+        $document = Document::build('28711186046');
         
         static::assertTrue($document->isCPF());
     }

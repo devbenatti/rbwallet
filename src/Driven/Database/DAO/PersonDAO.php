@@ -2,8 +2,10 @@
 
 namespace App\Driven\Database\DAO;
 
+use App\Model\User;
 use App\Model\VO\Cpf;
 use App\Model\Person;
+use App\Model\VO\DBint;
 use App\Model\VO\DocumentType;
 use Doctrine\DBAL\Exception;
 use ReflectionException;
@@ -15,6 +17,18 @@ use ReflectionException;
 final class PersonDAO
 {
     use DAOCapabilities;
+    
+    public function create(User $user): int
+    {
+        $this->getDatabase()->insert('user', [
+            'document' => $user->getDocument()->getIdentifier(),
+            'name' => $user->getName()->getValue(),
+            'email' => $user->getEmail()->getValue(),
+            'password' => $user->getPassword()->getValue()
+        ]);
+        
+        return (int) $this->getDatabase()->lastInsertId();
+    }
 
     /**
      * @param int $id
@@ -43,13 +57,47 @@ final class PersonDAO
         $payer = Person::build([
             'id' => (int)$data['id'],
             'email' => $data['email'],
-            'document' => [
-                'type' => strlen($data['document']) == Cpf::CPF_LENGTH ? DocumentType::CPF : DocumentType::CNPJ,
-                'identifier' => $data['document']
-            ],
+            'document' => $data['document'],
             'name' => $data['name']
         ]);
         
         return $payer;
+    }
+
+    /**
+     * @param string $email
+     * @param string $document
+     * @return Person|null
+     * @throws Exception|ReflectionException
+     */
+    public function getByEmailOrDocument(string $email, string $document): ?Person
+    {
+        $data = $this->getDatabase()->createQueryBuilder()
+            ->select([
+                'u.id',
+                'u.document',
+                'u.email',
+                'u.name'
+            ])
+            ->from('user', 'u')
+            ->where('u.document = :document')
+            ->orWhere('u.email = :email')
+            ->setParameter('document', $document)
+            ->setParameter('email', $email)
+            ->execute()
+            ->fetchAssociative();
+        
+        if (!$data) {
+            return null;
+        }
+
+        $user = Person::build([
+            'id' => (int)$data['id'],
+            'email' => $data['email'],
+            'document' => $data['document'],
+            'name' => $data['name']
+        ]);
+
+        return $user;
     }
 }

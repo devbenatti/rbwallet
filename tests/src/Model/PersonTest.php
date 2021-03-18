@@ -21,10 +21,7 @@ class PersonTest extends TestCase
     public function testPayerMerchantShouldReturnTrue()
     {
         $payerData = $this->getPayerData([
-            'document' => [
-                'type' => DocumentType::CNPJ,
-                'identifier' => '42145831000100'
-            ]
+            'document' => '42145831000100'
         ]);
 
         $payer = Person::build($payerData);
@@ -41,10 +38,7 @@ class PersonTest extends TestCase
         return array_filter(
             array_merge([
                 'id' => 1,
-                'document' => [
-                    'type' => DocumentType::CPF,
-                    'identifier' => '05719027540'
-                ],
+                'document' =>'28711186046',
                 'email' => 'xablau@gmail.com',
                 'name' => 'Xablau testador'
             ], $data)

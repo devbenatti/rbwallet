@@ -1,6 +1,8 @@
 <?php
 
+use App\Command\Create\CreateHandler;
 use App\Command\Transaction\TransactionHandler;
+use App\Driven\Database\DAO\NotificationRetryDAO;
 use App\Driven\Database\DAO\PersonDAO;
 use App\Driven\Database\DAO\TransactionDAO;
 use App\Driven\Database\Repository\MysqlWalletRepository;
@@ -10,7 +12,9 @@ use App\Driven\Http\TransactionAuthorizer;
 use App\Driven\Http\TransactionNotifier;
 use App\Driven\Uuid\UuidAdapter;
 use App\Driven\Uuid\UuidGenerator;
+use App\Driver\WebApi\Action\CreateAction;
 use App\Driver\WebApi\Action\TransactionAction;
+use App\Driver\WebApi\Middleware\PreventDuplicatedUser;
 use App\Driver\WebApi\Validator\JsonSchemaValidator;
 use App\Driver\WebApi\Validator\Validator;
 use App\Model\WalletRepository;
@@ -38,11 +42,14 @@ return function (ContainerBuilder $containerBuilder) {
         PersonDAO::class => function (ContainerInterface $c) {
             return new PersonDAO($c->get(Connection::class));
         },
-        WalletRepository::class => function (ContainerInterface $c) {
-            return new MysqlWalletRepository($c->get(Connection::class));
+        NotificationRetryDAO::class => function (ContainerInterface $c) {
+            return new NotificationRetryDAO($c->get(Connection::class));
         },
         TransactionDAO::class => function (ContainerInterface $c) {
             return new TransactionDAO($c->get(Connection::class));
+        },
+        WalletRepository::class => function (ContainerInterface $c) {
+            return new MysqlWalletRepository($c->get(Connection::class));
         },
         UuidGenerator::class => function () {
             return new UuidAdapter();
@@ -61,7 +68,15 @@ return function (ContainerBuilder $containerBuilder) {
                 $c->get(WalletRepository::class),
                 $c->get(TransactionDAO::class),
                 $c->get(TransactionAuthorizer::class),
-                $c->get(TransactionNotifier::class)
+                $c->get(TransactionNotifier::class),
+                $c->get(NotificationRetryDAO::class),
+            );
+        },
+        CreateHandler::class => function (ContainerInterface $c) {
+            return new CreateHandler(
+                $c->get(PersonDAO::class),
+                $c->get(WalletRepository::class),
+                $c->get(UuidGenerator::class)
             );
         },
         TransactionAction::class => function (ContainerInterface $c) {
@@ -70,8 +85,16 @@ return function (ContainerBuilder $containerBuilder) {
                 $c->get(UuidGenerator::class)
             );
         },
+        CreateAction::class => function (ContainerInterface $c) {
+            return new CreateAction(
+                $c->get(CreateHandler::class)
+            );
+        },
         Validator::class => function () {
             return new JsonSchemaValidator();
+        },
+        PreventDuplicatedUser::class => function (ContainerInterface $c) {
+            return new PreventDuplicatedUser( $c->get(PersonDAO::class));
         }
     ]);
 };

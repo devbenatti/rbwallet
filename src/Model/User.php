@@ -1,28 +1,37 @@
 <?php
 
-namespace App\DTO;
+namespace App\Model;
 
-use App\Model\ImmutableCapabilities;
 use App\Model\VO\Document;
 use App\Model\VO\Email;
 use App\Model\VO\FullName;
 use App\Model\VO\StrValue;
 use ReflectionException;
 
-final class UserDTO
+final class User
 {
-    use ImmutableCapabilities;
+    /**
+     * @var StrValue
+     */
+    private StrValue $password;
     
+    /**
+     * @var FullName
+     */
+    private FullName $name;
+    
+    /**
+     * @var Email
+     */
     private Email $email;
     
+    /**
+     * @var Document
+     */
     private Document $document;
-    
-    private FullName $name;
-   
-    private StrValue $password;
 
     /**
-     * UserDTO constructor.
+     * User constructor.
      * @param FullName $name
      * @param Document $document
      * @param Email $email
@@ -40,16 +49,48 @@ final class UserDTO
         $this->email = $email;
         $this->document = $document;
     }
+
+    /**
+     * @return StrValue
+     */
+    public function getPassword(): StrValue
+    {
+        return $this->password;
+    }
+
+    /**
+     * @return FullName
+     */
+    public function getName(): FullName
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return Email
+     */
+    public function getEmail(): Email
+    {
+        return $this->email;
+    }
+
+    /**
+     * @return Document
+     */
+    public function getDocument(): Document
+    {
+        return $this->document;
+    }
     
     /**
      * @param array $data
-     * @return UserDTO
+     * @return User
      * @throws ReflectionException
      */
-    public static function build(array $data): UserDTO
+    public static function build(array $data): User
     {
         $name = new FullName($data['name']);
-        $document = Document::build($data['document']['type'], $data['document']['identifier']);
+        $document = Document::build($data['document']);
         $email = new Email($data['email']);
         $password = new StrValue($data['password']);
         
@@ -68,6 +109,4 @@ final class UserDTO
             'password' => $this->password->getValue()
         ];
     }
-    
-    
 }

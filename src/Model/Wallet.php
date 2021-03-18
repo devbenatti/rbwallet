@@ -56,6 +56,14 @@ final class Wallet
     }
 
     /**
+     * @return DBint
+     */
+    public function getOwnerId(): DBint
+    {
+        return $this->ownerId;
+    }
+
+    /**
      * @param Flow $flow
      * @throws InsufficientFundsException
      */

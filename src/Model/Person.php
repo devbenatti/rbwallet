@@ -60,7 +60,7 @@ final class Person
     public static function build(array $data): self
     {
         $id = new DBint($data['id']);
-        $document = Document::build($data['document']['type'], $data['document']['identifier']);
+        $document = Document::build($data['document']);
         $email = new Email($data['email']);
         $name = new FullName($data['name']);
         
@@ -71,7 +71,7 @@ final class Person
     {
         return [
           'id' => $this->id->getValue(),
-          'document' => $this->document->toArray(),
+          'document' => $this->document->getIdentifier()->getValue(),
           'email' => $this->email->getValue(),
           'name' => $this->name->getValue(),  
         ];

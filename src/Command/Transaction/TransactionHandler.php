@@ -4,6 +4,7 @@ namespace App\Command\Transaction;
 
 use App\Command\CommandHandler;
 use App\Command\CommandHandlerCapabilities;
+use App\Driven\Database\DAO\NotificationRetryDAO;
 use App\Driven\Database\DAO\TransactionDAO;
 use App\Driven\Http\NotifierUnavailableException;
 use App\Driven\Http\TransactionAuthorizer;
@@ -46,6 +47,11 @@ final class TransactionHandler implements CommandHandler
      * @var TransactionNotifier
      */
     private TransactionNotifier $notifier;
+    
+    /**
+     * @var NotificationRetryDAO
+     */
+    private NotificationRetryDAO $notificationRetryDAO;
 
     /**
      * TransactionHandler constructor.
@@ -53,17 +59,20 @@ final class TransactionHandler implements CommandHandler
      * @param TransactionDAO $transactionDAO
      * @param TransactionAuthorizer $authorizer
      * @param TransactionNotifier $notifier
+     * @param NotificationRetryDAO $notificationRetryDAO
      */
     public function __construct(
         WalletRepository $walletRepository,
         TransactionDAO $transactionDAO,
         TransactionAuthorizer $authorizer,
-        TransactionNotifier $notifier
+        TransactionNotifier $notifier,
+        NotificationRetryDAO $notificationRetryDAO
     ) {
         $this->walletRepository = $walletRepository;
         $this->transactionDAO = $transactionDAO;
         $this->authorizer = $authorizer;
         $this->notifier = $notifier;
+        $this->notificationRetryDAO = $notificationRetryDAO;
     }
 
     /**
@@ -114,23 +123,22 @@ final class TransactionHandler implements CommandHandler
             );
         } catch (TransactionUnauthorizedException $exception) {
             $this->transactionDAO->getDatabase()->rollBack();
+            
             $this->transactionDAO->updateStatus(
                 $this->code,
                 TransactionStatus::FAILED,
                 FailReason::UNAUTHORIZED
             );
         } catch (NotifierUnavailableException $exception) {
-
+            $this->notificationRetryDAO->create($this->code);
         } catch (Exception $exception) {
             $this->transactionDAO->getDatabase()->rollBack();
-
+            
             $this->transactionDAO->updateStatus(
                 $this->code,
                 TransactionStatus::FAILED,
                 FailReason::UNKNOWN
             );
-            
-            throw $exception;
         }
     }
 }
