@@ -15,7 +15,7 @@ final class NotificationRetryDAO
      */
     public function create(Uuid $code): void
     {
-        $this->getDatabase()->insert('notification_retry', [
+        $this->database->insert('notification_retry', [
             'transaction' => $code->getValue()
         ]);
     }

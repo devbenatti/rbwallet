@@ -6,6 +6,7 @@ use App\Command\CommandHandler;
 use App\Command\CommandHandlerCapabilities;
 use App\Driven\Database\DAO\NotificationRetryDAO;
 use App\Driven\Database\DAO\TransactionDAO;
+use App\Driven\Database\DAO\WalletDAO;
 use App\Driven\Http\NotifierUnavailableException;
 use App\Driven\Http\TransactionAuthorizer;
 use App\Driven\Http\TransactionNotifier;
@@ -15,7 +16,6 @@ use App\Model\VO\FailReason;
 use App\Model\VO\TransactionStatus;
 use App\Model\VO\Uuid;
 use App\Model\Flow;
-use App\Model\WalletRepository;
 use Exception;
 
 final class TransactionHandler implements CommandHandler
@@ -24,9 +24,9 @@ final class TransactionHandler implements CommandHandler
     use CommandHandlerCapabilities;
     
     /**
-     * @var WalletRepository
+     * @var WalletDAO
      */
-    private WalletRepository $walletRepository;
+    private WalletDAO $walletDAO;
     
     /**
      * @var TransactionDAO
@@ -55,20 +55,20 @@ final class TransactionHandler implements CommandHandler
 
     /**
      * TransactionHandler constructor.
-     * @param WalletRepository $walletRepository
+     * @param WalletDAO $walletDAO
      * @param TransactionDAO $transactionDAO
      * @param TransactionAuthorizer $authorizer
      * @param TransactionNotifier $notifier
      * @param NotificationRetryDAO $notificationRetryDAO
      */
     public function __construct(
-        WalletRepository $walletRepository,
+        WalletDAO $walletDAO,
         TransactionDAO $transactionDAO,
         TransactionAuthorizer $authorizer,
         TransactionNotifier $notifier,
         NotificationRetryDAO $notificationRetryDAO
     ) {
-        $this->walletRepository = $walletRepository;
+        $this->walletDAO = $walletDAO;
         $this->transactionDAO = $transactionDAO;
         $this->authorizer = $authorizer;
         $this->notifier = $notifier;
@@ -93,28 +93,28 @@ final class TransactionHandler implements CommandHandler
         $this->transactionDAO->create($transaction);
         
         try {
-            $this->transactionDAO->getDatabase()->beginTransaction();
+            $this->walletDAO->beginTransaction();
             
             $outFlow = Flow::buildCashOutflow($transaction);
-            $payerWallet = $this->walletRepository->findByPerson($command->getPayerId());
+            $payerWallet = $this->walletDAO->findByPerson($command->getPayerId());
             $payerWallet->updateBalance($outFlow);
-            $this->walletRepository->updateBalance($payerWallet);
+            $this->walletDAO->updateBalance($payerWallet);
             
             $this->authorizer->authorize($transaction);
             
             $inFlow = Flow::buildCashInflow($transaction);
-            $payeeWallet = $this->walletRepository->findByPerson($command->getPayeeId());
+            $payeeWallet = $this->walletDAO->findByPerson($command->getPayeeId());
             $payeeWallet->updateBalance($inFlow);
-            $this->walletRepository->updateBalance($payeeWallet);
+            $this->walletDAO->updateBalance($payeeWallet);
             
-            $this->transactionDAO->getDatabase()->commit();
+            $this->walletDAO->commit();
             
             $this->transactionDAO->updateStatus($transaction->getCode(), TransactionStatus::SUCCESS);
         
             $this->notifier->notify($transaction);
             
         } catch (InsufficientFundsException $exception) {
-            $this->transactionDAO->getDatabase()->rollBack();
+            $this->transactionDAO->rollBack();
 
             $this->transactionDAO->updateStatus(
                 $this->code,
@@ -122,7 +122,7 @@ final class TransactionHandler implements CommandHandler
                 FailReason::INSUFFICIENT_FUNDS
             );
         } catch (TransactionUnauthorizedException $exception) {
-            $this->transactionDAO->getDatabase()->rollBack();
+            $this->transactionDAO->rollBack();
             
             $this->transactionDAO->updateStatus(
                 $this->code,
@@ -132,7 +132,7 @@ final class TransactionHandler implements CommandHandler
         } catch (NotifierUnavailableException $exception) {
             $this->notificationRetryDAO->create($this->code);
         } catch (Exception $exception) {
-            $this->transactionDAO->getDatabase()->rollBack();
+            $this->transactionDAO->rollBack();
             
             $this->transactionDAO->updateStatus(
                 $this->code,

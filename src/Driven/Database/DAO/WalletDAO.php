@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Driven\Database\Repository;
+namespace App\Driven\Database\DAO;
 
 use App\Model\Wallet;
-use App\Model\WalletRepository;
+
 use Doctrine\DBAL\Exception;
 use ReflectionException;
 
-class MysqlWalletRepository implements WalletRepository
+final class WalletDAO
 {
-    use RepositoryCapabilities;
+    use DAOCapabilities;
 
     public function create(Wallet $wallet): void
     {

@@ -6,6 +6,7 @@ use App\Command\Transaction\Transaction;
 use App\Command\Transaction\TransactionHandler;
 use App\Driven\Database\DAO\NotificationRetryDAO;
 use App\Driven\Database\DAO\TransactionDAO;
+use App\Driven\Database\DAO\WalletDAO;
 use App\Driven\Http\NotifierUnavailableException;
 use App\Driven\Http\TransactionAuthorizer;
 use App\Driven\Http\TransactionNotifier;
@@ -14,7 +15,6 @@ use App\Model\VO\FailReason;
 use App\Model\VO\TransactionStatus;
 use App\Model\VO\Uuid;
 use App\Model\Wallet;
-use App\Model\WalletRepository;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 
@@ -57,12 +57,12 @@ class TestTransactionHandler extends TestCase
             ->method('updateStatus')
             ->withConsecutive([$code, TransactionStatus::SUCCESS]);
         
-        $walletRepository = $this->createMock(WalletRepository::class);
-        $walletRepository->method('findByPerson')
+        $walletDAO = $this->createMock(WalletDAO::class);
+        $walletDAO->method('findByPerson')
             ->withConsecutive([1], [2])
             ->willReturnOnConsecutiveCalls($payerWallet, $payeeWallet);
         
-        $walletRepository->expects(static::exactly(2))
+        $walletDAO->expects(static::exactly(2))
             ->method('updateBalance')
             ->withConsecutive([$payerUpdatedWallet], [$payeeUpdatedWallet]);
         
@@ -74,7 +74,7 @@ class TestTransactionHandler extends TestCase
         $command = new Transaction($code,199.99,1, 2);
         
         $handler = new TransactionHandler(
-            $walletRepository,
+            $walletDAO,
             $transactionDAO,
             $authorizer,
             $notifier,
@@ -97,8 +97,8 @@ class TestTransactionHandler extends TestCase
             ->method('updateStatus')
             ->withConsecutive([$code, TransactionStatus::FAILED, FailReason::INSUFFICIENT_FUNDS]);
 
-        $walletRepository = $this->createMock(WalletRepository::class);
-        $walletRepository->method('findByPerson')
+        $walletDAO = $this->createMock(WalletDAO::class);
+        $walletDAO->method('findByPerson')
             ->withAnyParameters()
             ->willReturn($wallet);
 
@@ -110,7 +110,7 @@ class TestTransactionHandler extends TestCase
         $command = new Transaction($code,500.00,1, 2);
 
         $handler = new TransactionHandler(
-            $walletRepository,
+            $walletDAO,
             $transactionDAO,
             $authorizer,
             $notifier,
@@ -133,8 +133,8 @@ class TestTransactionHandler extends TestCase
             ->method('updateStatus')
             ->withConsecutive([$code, TransactionStatus::FAILED, FailReason::UNAUTHORIZED]);
 
-        $walletRepository = $this->createMock(WalletRepository::class);
-        $walletRepository->method('findByPerson')
+        $walletDAO = $this->createMock(WalletDAO::class);
+        $walletDAO->method('findByPerson')
             ->withAnyParameters()
             ->willReturn($wallet);
 
@@ -150,7 +150,7 @@ class TestTransactionHandler extends TestCase
         $command = new Transaction($code,100.00,1, 2);
 
         $handler = new TransactionHandler(
-            $walletRepository,
+            $walletDAO,
             $transactionDAO,
             $authorizer,
             $notifier,
@@ -173,8 +173,8 @@ class TestTransactionHandler extends TestCase
             ->method('updateStatus')
             ->withConsecutive([$code, TransactionStatus::SUCCESS]);
         
-        $walletRepository = $this->createMock(WalletRepository::class);
-        $walletRepository->method('findByPerson')
+        $walletDAO = $this->createMock(WalletDAO::class);
+        $walletDAO->method('findByPerson')
             ->withAnyParameters()
             ->willReturn($wallet);
 
@@ -193,7 +193,7 @@ class TestTransactionHandler extends TestCase
         $command = new Transaction($code,100.00,1, 2);
 
         $handler = new TransactionHandler(
-            $walletRepository,
+            $walletDAO,
             $transactionDAO,
             $authorizer,
             $notifier,

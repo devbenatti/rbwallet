@@ -5,10 +5,10 @@ namespace Tests\Command\Create;
 use App\Command\Create\Create;
 use App\Command\Create\CreateHandler;
 use App\Driven\Database\DAO\PersonDAO;
+use App\Driven\Database\DAO\WalletDAO;
 use App\Driven\Uuid\UuidGenerator;
 use App\Model\VO\Uuid;
 use App\Model\Wallet;
-use App\Model\WalletRepository;
 use PHPUnit\Framework\TestCase;
 
 class TestCreateHandler extends TestCase
@@ -40,12 +40,12 @@ class TestCreateHandler extends TestCase
             'ownerId' => 1
         ]);
         
-        $walletRepository = $this->createMock(WalletRepository::class);
-        $walletRepository->expects(static::once())
+        $walletDAO = $this->createMock(WalletDAO::class);
+        $walletDAO->expects(static::once())
             ->method('create')
             ->with($wallet);
         
-        $handler = new CreateHandler($personDAO, $walletRepository, $uuidGenerator);
+        $handler = new CreateHandler($personDAO, $walletDAO, $uuidGenerator);
         $handler->handle($command);
     }
 }

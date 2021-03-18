@@ -5,7 +5,7 @@ use App\Command\Transaction\TransactionHandler;
 use App\Driven\Database\DAO\NotificationRetryDAO;
 use App\Driven\Database\DAO\PersonDAO;
 use App\Driven\Database\DAO\TransactionDAO;
-use App\Driven\Database\Repository\MysqlWalletRepository;
+use App\Driven\Database\DAO\WalletDAO;
 use App\Driven\Http\Authorizer;
 use App\Driven\Http\Notifier;
 use App\Driven\Http\TransactionAuthorizer;
@@ -17,7 +17,6 @@ use App\Driver\WebApi\Action\TransactionAction;
 use App\Driver\WebApi\Middleware\PreventDuplicatedUser;
 use App\Driver\WebApi\Validator\JsonSchemaValidator;
 use App\Driver\WebApi\Validator\Validator;
-use App\Model\WalletRepository;
 use DI\ContainerBuilder;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
@@ -48,8 +47,8 @@ return function (ContainerBuilder $containerBuilder) {
         TransactionDAO::class => function (ContainerInterface $c) {
             return new TransactionDAO($c->get(Connection::class));
         },
-        WalletRepository::class => function (ContainerInterface $c) {
-            return new MysqlWalletRepository($c->get(Connection::class));
+        WalletDAO::class => function (ContainerInterface $c) {
+            return new WalletDAO($c->get(Connection::class));
         },
         UuidGenerator::class => function () {
             return new UuidAdapter();
@@ -65,7 +64,7 @@ return function (ContainerBuilder $containerBuilder) {
         },
         TransactionHandler::class => function (ContainerInterface $c) {
             return new TransactionHandler(
-                $c->get(WalletRepository::class),
+                $c->get(WalletDAO::class),
                 $c->get(TransactionDAO::class),
                 $c->get(TransactionAuthorizer::class),
                 $c->get(TransactionNotifier::class),
@@ -75,7 +74,7 @@ return function (ContainerBuilder $containerBuilder) {
         CreateHandler::class => function (ContainerInterface $c) {
             return new CreateHandler(
                 $c->get(PersonDAO::class),
-                $c->get(WalletRepository::class),
+                $c->get(WalletDAO::class),
                 $c->get(UuidGenerator::class)
             );
         },

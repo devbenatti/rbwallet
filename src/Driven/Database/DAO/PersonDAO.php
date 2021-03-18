@@ -3,10 +3,7 @@
 namespace App\Driven\Database\DAO;
 
 use App\Model\User;
-use App\Model\VO\Cpf;
 use App\Model\Person;
-use App\Model\VO\DBint;
-use App\Model\VO\DocumentType;
 use Doctrine\DBAL\Exception;
 use ReflectionException;
 
@@ -20,14 +17,14 @@ final class PersonDAO
     
     public function create(User $user): int
     {
-        $this->getDatabase()->insert('user', [
+        $this->database->insert('user', [
             'document' => $user->getDocument()->getIdentifier(),
             'name' => $user->getName()->getValue(),
             'email' => $user->getEmail()->getValue(),
             'password' => $user->getPassword()->getValue()
         ]);
         
-        return (int) $this->getDatabase()->lastInsertId();
+        return (int) $this->database->lastInsertId();
     }
 
     /**
@@ -37,7 +34,8 @@ final class PersonDAO
      */
     public function getById(int $id): ?Person
     {
-        $data = $this->getDatabase()->createQueryBuilder()
+        $data = $this->database
+            ->createQueryBuilder()
             ->select([
                 'u.id',
                 'u.document',
@@ -72,7 +70,8 @@ final class PersonDAO
      */
     public function getByEmailOrDocument(string $email, string $document): ?Person
     {
-        $data = $this->getDatabase()->createQueryBuilder()
+        $data = $this->database
+            ->createQueryBuilder()
             ->select([
                 'u.id',
                 'u.document',

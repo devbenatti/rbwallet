@@ -13,8 +13,18 @@ trait DAOCapabilities
         $this->database = $database;
     }
 
-    public function getDatabase(): Connection
+    public function beginTransaction(): void
     {
-        return $this->database;
+        $this->database->beginTransaction();
+    }
+    
+    public function rollBack(): void
+    {
+        $this->database->rollBack();
+    }
+    
+    public function commit(): void
+    {
+        $this->database->commit();
     }
 }

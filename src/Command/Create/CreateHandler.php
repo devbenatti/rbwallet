@@ -5,10 +5,10 @@ namespace App\Command\Create;
 use App\Command\CommandHandler;
 use App\Command\CommandHandlerCapabilities;
 use App\Driven\Database\DAO\PersonDAO;
+use App\Driven\Database\DAO\WalletDAO;
 use App\Driven\Uuid\UuidGenerator;
 use App\Model\User;
 use App\Model\Wallet;
-use App\Model\WalletRepository;
 use Exception;
 use ReflectionException;
 
@@ -22,9 +22,9 @@ final class CreateHandler implements CommandHandler
     private PersonDAO $personDAO;
     
     /**
-     * @var WalletRepository
+     * @var WalletDAO 
      */
-    private WalletRepository $walletRepository;
+    private WalletDAO $walletDAO;
     
     /**
      * @var UuidGenerator
@@ -34,23 +34,23 @@ final class CreateHandler implements CommandHandler
     /**
      * CreateHandler constructor.
      * @param PersonDAO $personDAO
-     * @param WalletRepository $walletRepository
+     * @param WalletDAO $walletDAO
      * @param UuidGenerator $uuidGenerator
      */
     public function __construct(
         PersonDAO $personDAO,
-        WalletRepository $walletRepository,
+        WalletDAO $walletDAO,
         UuidGenerator $uuidGenerator
     )
     {
         $this->personDAO = $personDAO;
-        $this->walletRepository = $walletRepository;
+        $this->walletDAO = $walletDAO;
         $this->uuidGenerator = $uuidGenerator;
     }
 
     /**
      * @param Create $command
-     * @throws ReflectionException|\Doctrine\DBAL\Exception
+     * @throws ReflectionException
      */
     public function __invoke(Create $command)
     {
@@ -62,7 +62,7 @@ final class CreateHandler implements CommandHandler
         ]);
         
         try {
-            $this->personDAO->getDatabase()->beginTransaction();
+            $this->personDAO->beginTransaction();
 
             $personId = $this->personDAO->create($user);
 
@@ -72,11 +72,11 @@ final class CreateHandler implements CommandHandler
                 'ownerId' => $personId
             ]);
 
-            $this->walletRepository->create($wallet);
+            $this->walletDAO->create($wallet);
 
-            $this->personDAO->getDatabase()->commit();
+            $this->personDAO->commit();
         } catch (Exception $exception) {
-            $this->personDAO->getDatabase()->rollBack();
+            $this->personDAO->rollBack();
             throw new exception;
         }
     }

@@ -16,7 +16,7 @@ final class TransactionDAO
      */
     public function create (Transaction $transaction): void
     {
-        $this->getDatabase()->insert('transaction', [
+        $this->database->insert('transaction', [
             'code' => $transaction->getCode()->getValue(),
             'amount' => $transaction->getAmount()->getValue(),
             'status' => $transaction->getStatus()->getValue(),
