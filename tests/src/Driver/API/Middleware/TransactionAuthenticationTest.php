@@ -13,7 +13,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpForbiddenException;
 
-class TestTransactionAuthentication extends TestCase
+class TransactionAuthenticationTest extends TestCase
 {
     public function testSuccess()
     {
@@ -45,10 +45,7 @@ class TestTransactionAuthentication extends TestCase
         $request = $this->createRequest();
         
         $personData = $this->getPersonData([
-            'document' => [
-                'type' => DocumentType::CNPJ,
-                'identifier' => '04954410974545'
-            ]
+            'document' => '04954410974545'
         ]);
         
         $person = Person::build($personData);
@@ -133,10 +130,7 @@ class TestTransactionAuthentication extends TestCase
         return array_filter(
             array_merge([
                 'id' => 1,
-                'document' => [
-                    'type' => DocumentType::CPF,
-                    'identifier' => '05719027540'
-                ],
+                'document' => '05719027540',
                 'email' => 'xablau@gmail.com',
                 'name' => 'Xablau testador'
             ], $data)
