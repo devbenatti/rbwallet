@@ -78,3 +78,27 @@ VALUES(2, 'SUCESS');
 INSERT INTO onepuchman.transaction_status
 (id, description)
 VALUES(3, 'FAILED');
+
+INSERT INTO onepuchman.`user`
+(id, document, email, name, password)
+VALUES(100, '39363850099', 'riquinho_rico@gmail.com', 'Riquinho Rico', '123');
+
+INSERT INTO onepuchman.`user`
+(id, document, email, name, password)
+VALUES(101, '76868053000190', 'tibia_store@gmail.com', 'Tibia Store', '123');
+
+INSERT INTO onepuchman.`user`
+(id, document, email, name, password)
+VALUES(102, '79451144072', 'xablau_testador@gmail.com', 'Xablau Testador', '123');
+
+INSERT INTO onepuchman.wallet
+(id, balance, `user`)
+VALUES('d014577b-845d-47ae-8039-010c9ae316c6', 99999.00, 100);
+
+INSERT INTO onepuchman.wallet
+(id, balance, `user`)
+VALUES('11a6fb03-9a28-4db5-917b-617c60b2b2bb', 0.00, 101);
+
+INSERT INTO onepuchman.wallet
+(id, balance, `user`)
+VALUES('6d9e75e0-6312-42b9-a0d5-58629532b46a', 1.99, 102);

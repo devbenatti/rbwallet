@@ -62,8 +62,15 @@ To send money to another user, you must send an HTTP POST request for route `/tr
 If payer dont have funds to transfer, application will create a transaction with status `FAILED` and set reason to  `insufficient_funds`. If the transaction is not authorized, application will create transaction with status `FAILED` and reason `unauthorized`. 
 
 ## Test
+To enable testing of money transfer between users, there are some pre-registered users.
 
-To run tests
+| ID | Merchant | Balance |
+| ------ | ------ | ------ |
+| 100 | FALSE | 99999.00 |
+| 101 | TRUE | 0.00 |
+| 102 | FALSE | 1.99 |
+
+To run unit tests
 ```sh
 make test
 ```
@@ -71,3 +78,4 @@ make test
 ## Roadmap
 - Deposit money
 - Withdraw money
+- Balance
