@@ -1,17 +1,12 @@
 {
-    "name": "slim/slim-skeleton",
-    "description": "A Slim Framework skeleton application for rapid development",
+    "name": "devbenatti/rbewallet",
+    "description": "",
     "license": "MIT",
     "authors": [
         {
-            "name": "Josh Lockhart",
-            "email": "info@joshlockhart.com",
-            "homepage": "http://www.joshlockhart.com/"
-        },
-        {
-            "name": "Pierre Berube",
-            "email": "pierre@lgse.com",
-            "homepage": "http://www.lgse.com/"
+            "name": "Renato Benatti",
+            "email": "renato.benatti7@gmail.com",
+            "homepage": "https://www.linkedin.com/in/renato-benatti-31b4a6122/"
         }
     ],
     "require": {
