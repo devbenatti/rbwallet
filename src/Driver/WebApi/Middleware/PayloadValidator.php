@@ -11,7 +11,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Slim\Exception\HttpBadRequestException;
 
 final class PayloadValidator  implements MiddlewareInterface
 {
@@ -43,7 +42,7 @@ final class PayloadValidator  implements MiddlewareInterface
         $result = $this->validator->validate($validation, $data);
         
         if(!$result->isValid()) {
-            throw new HttpBadRequestException($request, json_encode($result->getErrors()));
+            throw new BadRequestException($result->getErrors());
         }
         
         return $handler->handle($request);

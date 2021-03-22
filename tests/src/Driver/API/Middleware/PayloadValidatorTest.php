@@ -2,6 +2,7 @@
 
 namespace Tests\Driver\API\Middleware;
 
+use App\Driver\WebApi\Middleware\BadRequestException;
 use App\Driver\WebApi\Middleware\PayloadValidator;
 use App\Driver\WebApi\Validator\JsonSchemaValidator;
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -30,7 +31,6 @@ class PayloadValidatorTest extends TestCase
     /**
      * @param $data
      * @dataProvider dataProvider
-     * @throws HttpBadRequestException
      */
     public function testInvalidDataShouldThrowException($data)
     {
@@ -42,7 +42,7 @@ class PayloadValidatorTest extends TestCase
 
         $handler = $this->createMock(RequestHandlerInterface::class);
 
-        $this->expectException(HttpBadRequestException::class);
+        $this->expectException(BadRequestException::class);
         
         $middleware->process($request, $handler);
     }
