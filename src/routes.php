@@ -9,10 +9,10 @@ use Slim\App;
 
 return function (App $app) {
     $app->post('/transaction', TransactionAction::class)
-        ->add(PayloadValidator::class)
-        ->add(AuthorizationTransaction::class);
+        ->add(AuthorizationTransaction::class)
+        ->add(PayloadValidator::class);
     
     $app->post('/create', CreateAction::class)
-        ->add(PayloadValidator::class)
-        ->add(PreventDuplicatedUser::class);
+        ->add(PreventDuplicatedUser::class)
+        ->add(PayloadValidator::class);
 };
