@@ -21,8 +21,10 @@ use DI\ContainerBuilder;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use GuzzleHttp\Client;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Client\ClientInterface;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
@@ -38,17 +40,22 @@ return function (ContainerBuilder $containerBuilder) {
             ];
             return DriverManager::getConnection($settings);
         },
+        CacheItemPoolInterface::class => function (ContainerInterface $c) {
+            $url = sprintf('redis://%s', $c->get('settings')['cache']['host']);
+            $client = RedisAdapter::createConnection($url);
+            return new RedisAdapter($client);
+        },
         PersonDAO::class => function (ContainerInterface $c) {
-            return new PersonDAO($c->get(Connection::class));
+            return new PersonDAO($c->get(Connection::class), $c->get(CacheItemPoolInterface::class));
         },
         NotificationRetryDAO::class => function (ContainerInterface $c) {
-            return new NotificationRetryDAO($c->get(Connection::class));
+            return new NotificationRetryDAO($c->get(Connection::class), $c->get(CacheItemPoolInterface::class));
         },
         TransactionDAO::class => function (ContainerInterface $c) {
-            return new TransactionDAO($c->get(Connection::class));
+            return new TransactionDAO($c->get(Connection::class), $c->get(CacheItemPoolInterface::class));
         },
         WalletDAO::class => function (ContainerInterface $c) {
-            return new WalletDAO($c->get(Connection::class));
+            return new WalletDAO($c->get(Connection::class), $c->get(CacheItemPoolInterface::class));
         },
         UuidGenerator::class => function () {
             return new UuidAdapter();

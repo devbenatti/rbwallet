@@ -13,7 +13,9 @@ return function (ContainerBuilder $containerBuilder) {
                 'user'      => getenv('DATABASE_USER'),
                 'pass'      => getenv('DATABASE_PASS'),
                 'database'  => getenv('DATABASE_NAME'),
-                'aes_key'   => getenv('DATABASE_AES_KEY')
+            ],
+            'cache' => [
+                'host' => getenv('CACHE_HOST'),
             ]
         ],
     ]);

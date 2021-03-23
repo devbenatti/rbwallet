@@ -4,7 +4,9 @@ namespace App\Driven\Database\DAO;
 
 use App\Model\User;
 use App\Model\Person;
+use DateTimeImmutable;
 use Doctrine\DBAL\Exception;
+use Psr\Cache\InvalidArgumentException;
 use ReflectionException;
 
 /**
@@ -14,6 +16,9 @@ use ReflectionException;
 final class PersonDAO
 {
     use DAOCapabilities;
+
+    /** @var string */
+    private const CACHE_TTL = '+5 minutes';
     
     public function create(User $user): int
     {
@@ -30,10 +35,16 @@ final class PersonDAO
     /**
      * @param int $id
      * @return Person|null
-     * @throws ReflectionException|Exception
+     * @throws ReflectionException|Exception|InvalidArgumentException
      */
     public function getById(int $id): ?Person
     {
+        $cachedPerson = $this->getFromCache($id);
+        
+        if ($cachedPerson) {
+            return $cachedPerson;
+        }
+
         $data = $this->database
             ->createQueryBuilder()
             ->select([
@@ -58,6 +69,8 @@ final class PersonDAO
             'document' => $data['document'],
             'name' => $data['name']
         ]);
+        
+        $this->saveInCache($payer);
         
         return $payer;
     }
@@ -96,7 +109,30 @@ final class PersonDAO
             'document' => $data['document'],
             'name' => $data['name']
         ]);
-
+        
         return $user;
+    }
+
+    /**
+     * @param Person $person
+     * @throws InvalidArgumentException
+     */
+    private function saveInCache(Person $person): void
+    {
+        $item = $this->cache->getItem((string)$person->getId()->getValue());
+        $item->set($person);
+        $item->expiresAt(new DateTimeImmutable(self::CACHE_TTL));
+        $this->cache->save($item);
+    }
+
+    /**
+     * @param int $id
+     * @return Person|null
+     * @throws InvalidArgumentException
+     */
+    private function getFromCache(int $id): ?Person
+    {
+        $item = $this->cache->getItem((string)$id);
+        return $item->isHit() ? $item->get() : null;
     }
 }
