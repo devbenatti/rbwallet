@@ -112,33 +112,42 @@ final class TransactionHandler implements CommandHandler
             $this->transactionDAO->updateStatus($transaction->getCode(), TransactionStatus::SUCCESS);
         
             $this->notifier->notify($transaction);
-            
-        } catch (InsufficientFundsException $exception) {
-            $this->transactionDAO->rollBack();
-
+        } catch (Exception $exception) {
+            $this->errorCatcher($exception);
+        }
+    }
+    
+    private function errorCatcher(Exception $exception): void
+    {
+        $this->transactionDAO->rollBack();
+        
+        if ($exception instanceof InsufficientFundsException) {
             $this->transactionDAO->updateStatus(
                 $this->code,
                 TransactionStatus::FAILED,
                 FailReason::INSUFFICIENT_FUNDS
             );
-        } catch (TransactionUnauthorizedException $exception) {
-            $this->transactionDAO->rollBack();
-            
+            return;
+        }
+
+        if ($exception instanceof TransactionUnauthorizedException) {
             $this->transactionDAO->updateStatus(
                 $this->code,
                 TransactionStatus::FAILED,
                 FailReason::UNAUTHORIZED
             );
-        } catch (NotifierUnavailableException $exception) {
-            $this->notificationRetryDAO->create($this->code);
-        } catch (Exception $exception) {
-            $this->transactionDAO->rollBack();
-            
-            $this->transactionDAO->updateStatus(
-                $this->code,
-                TransactionStatus::FAILED,
-                FailReason::UNKNOWN
-            );
+            return;
         }
+        
+        if ($exception instanceof NotifierUnavailableException) {
+            $this->notificationRetryDAO->create($this->code);
+            return;
+        }
+
+        $this->transactionDAO->updateStatus(
+            $this->code,
+            TransactionStatus::FAILED,
+            FailReason::UNKNOWN
+        );
     }
 }

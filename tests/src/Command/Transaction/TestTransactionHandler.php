@@ -25,7 +25,6 @@ use ReflectionException;
  */
 class TestTransactionHandler extends TestCase
 {
-
     /**
      * @throws ReflectionException
      */
